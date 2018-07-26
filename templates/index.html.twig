@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard of Commits</title>
+</head>
+<body>
+  <table>
+      <tr>
+          <td>Name</td>
+          <td>Commits</td>
+      </tr>
+      {% for user in users %}
+      <tr>
+          <td><a href="https://github.com/{{ user.name }}">{{ user.name }}</a></td>
+          <td>{{ user.contributions }}</td>
+
+      </tr>
+      {% endfor %}
+  </table>
+</body>
+</html>
+<style>
+    body{
+        background-color: lightblue;
+        width: 100%;
+    }
+    table{
+        margin: 0 auto;
+    }
+    th, td{
+        text-align: left;
+        padding-right: 30px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border: 3px solid whitesmoke;
+    }
+</style>
