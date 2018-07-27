@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import render_template
-from CommitConnection import CommitConnection
+from ConnectionManager import CommitConnection
 import datetime
 
 app = Flask(__name__)

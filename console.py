@@ -1,4 +1,4 @@
-import CommitConnection
+import ConnectionManager
 username = input("User: ")
 year = input("Year: ")
-print(CommitConnection.CommitConnection.getCommitsInYear(year, username))
+print(ConnectionManager.CommitConnection.getCommitsInYear(year, username))
