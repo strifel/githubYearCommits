@@ -18,6 +18,10 @@
       </tr>
       {% endfor %}
   </table>
+  <div class="footer">
+      Refreshed: {{ time }}
+  </div>
+ <!--<script src="static/index.js"></script>-->
 </body>
 </html>
 <style>
@@ -38,4 +42,13 @@
     .header{
         background-color: deepskyblue;
     }
+    .footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: darkblue;
+  text-align: center;
+}
 </style>
