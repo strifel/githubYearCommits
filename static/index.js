@@ -1,5 +1,4 @@
 var percentage = {
-    tooltips: Array(),
     selectedElement: null,
     unselectElement: function () {
         if (percentage.selectedElement !== null) {
@@ -10,10 +9,10 @@ var percentage = {
     selectElement: function (element) {
         percentage.selectedElement = element;
         percentage.selectedElement.className = "selectedContributions";
-        for (var i = 0; i < percentage.tooltips.length; i++) {
-            var elements = Array.from(document.getElementsByClassName("contributions")).concat(Array.from(document.getElementsByClassName("selectedContributions")));
+        var elements = Array.from(document.getElementsByClassName("contributions"));
+        for (var i = 0; i < elements.length; i++) {
             var calc = Math.round((100 / percentage.selectedElement.innerHTML) * elements[i].innerHTML);
-            var tooltip = percentage.tooltips[i].updateTitleContent(calc + "%")
+            var tooltip = elements[i].tooltip.updateTitleContent(calc + "%")
         }
     }
 };
@@ -25,10 +24,10 @@ function onLoad() {
             percentage.unselectElement();
             percentage.selectElement(element);
         };
-        percentage.tooltips.push(
-            new Tooltip(element, {
-                placement: 'right',
-                title: ""
-            }));
+
+        element.tooltip = new Tooltip(element, {
+            placement: 'right',
+            title: ""
+        });
     });
 }
