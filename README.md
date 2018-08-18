@@ -7,3 +7,4 @@ On 26th Juli 2018 this is on MIT License.
 Do what you want
 ## Special Thanks
 go out to robmroi for the idea, sallar for giving an api and to DerKalaender because you can always thank him (especially if you write this late), when you spell him "DerKalaender".
+And to all people who build a library (I use).

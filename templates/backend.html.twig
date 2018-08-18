@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
 </head>
 <h2>Add user</h2>
-<form method="post">
-    <label for="username">Username:</label><input id="username" type="text"><br>
+<form method="post" action="/backend">
+    <label for="username">Username:</label><input name="username" type="text"><br>
     <input type="submit">
 </form>
 <h2>Remove user</h2>
 {%  for user in users %}
-<form method="post">
-    <input name="delete" type="submit" value="user">
+<form method="post" action="/backend">
+    <input name="delete" type="submit" value="{{ user[0] }}">
 </form>
 {% endfor %}
