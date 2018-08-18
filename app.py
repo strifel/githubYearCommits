@@ -1,7 +1,9 @@
 from flask import Flask
 from flask import render_template
 from flask import make_response
-from ConnectionManager import CommitConnection
+from flask import request
+from connection.ConnectionManager import CommitConnection
+from connection.ConnectionManager import DatabaseController
 from datetime import datetime
 
 app = Flask(__name__)
@@ -20,6 +22,25 @@ def main_page():
     resp.headers['Pragma'] = "no-cache"
     resp.headers['Expires'] = "0"
     return resp
+
+
+@app.route('/backend', methods=['GET', 'POST'])
+def backend():
+    if request.method == "GET":
+        if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+            resp = make_response(render_template("backend.html.twig"))
+            return resp
+        else:
+            resp = make_response(render_template("login.html.twig"))
+            resp.delete_cookie("gyc_login")
+            return resp
+    else:
+        if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+            if request.form.get("delete") != "":
+                DatabaseController.remove_user(request.form.get("delete"))
+            if request.form.get("username") != "":
+                DatabaseController.add_user(request.form.get("username"))
+            return "<body onload='location.reload(true);'></body>"
 
 
 if __name__ == '__main__':
