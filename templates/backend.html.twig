@@ -1,29 +1,83 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Backend - Main</title>
     <meta charset="UTF-8">
 </head>
-<h2>Add user</h2>
-<form method="post" action="/backend">
-    <label for="username">Username:</label><input name="username" type="text"><br>
-    <input type="submit">
-</form>
-<h2>Remove user</h2>
-{%  for user in users %}
-<form method="post" action="/backend">
-    <input name="delete" type="submit" value="{{ user[0] }}">
-</form>
-{% endfor %}
-<h2>Settings</h2>
-<form method="post" action="/backend">
-    <label for="setting">Setting: </label>
-    <select id="setting" name="setting">
-        <option value="cache">Cache Time</option>
-        <option value="password">Admin password</option>
-        <option value="allow-force">Allow force reload</option>
-    </select><br>
-    <label for="value">Value: </label><input id="value" name="value" type="text"><br>
-    <input type="submit" value="Save.">
-</form>
-<br>
-<button onclick='document.cookie = "gyc_login=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";location.reload();'>Logout</button>
+<body>
+<h1 style="text-align: center">Backend</h1>
+<div class="wrapper">
+    <div class="boxOne">
+        <div class="object">
+            <h2>Add user</h2>
+            <form method="post" action="/backend">
+                <label for="username">Username:</label><input name="username" type="text"><br><br>
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+    <div class="boxTwo">
+        <div class="object">
+            <h2>Remove user</h2>
+            {% for user in users %}
+                <form method="post" action="/backend">
+                    <input name="delete" type="submit" value="{{ user[0] }}">
+                </form><br><br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="wrapper">
+    <div class="boxOne">
+        <div class="object">
+            <h2>Settings</h2>
+            <form method="post" action="/backend">
+                <label for="setting">Setting: </label>
+                <select id="setting" name="setting">
+                    <option value="cache">Cache Time</option>
+                    <option value="password">Admin password</option>
+                    <option value="allow-force">Allow force reload</option>
+                </select><br><br>
+                <label for="value">Value: </label><input id="value" name="value" type="text"><br><br>
+                <input type="submit" value="Save.">
+            </form>
+        </div>
+    </div>
+    <div class="boxTwo">
+        <div class="object">
+            <h2>Logout</h2>
+            <button onclick='document.cookie = "gyc_login=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";location.reload();'>
+                Logout
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<style>
+    .wrapper {
+        display: flex;
+        margin: 30px;
+    }
+
+    .boxOne {
+        flex: 0 0 50%;
+    }
+
+    .boxTwo {
+        flex: 1;
+    }
+
+    .boxOne, .boxTwo {
+        margin: 30px;
+        border: black thin dotted;
+        background-color: lightgray;
+        border-radius: 15px;
+    }
+
+    .object {
+        display: block;
+        width: 40%;
+        margin: 5px auto;
+    }
+</style>
