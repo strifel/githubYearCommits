@@ -7,19 +7,24 @@ from connection.ConnectionManager import DatabaseController
 from datetime import datetime
 
 app = Flask(__name__)
+users = list()
+timeUpdated = 0
 
 
 @app.route('/', methods=['GET'])
 def main_page():
-    # TODO get users dynamicaly
+    global timeUpdated
     year = datetime.now().strftime("%Y")
-    users = list()
-    for user in DatabaseController.get_user():
-        users.append({"name": user[0], "contributions": CommitConnection.getCommitsInYear(year, user[0])})
+    if datetime.now().timestamp() - timeUpdated > DatabaseController.get_setting("cache"):
+        timeUpdated = datetime.now().timestamp()
+        for user in DatabaseController.get_user():
+            users.append({"name": user[0], "contributions": CommitConnection.getCommitsInYear(year, user[0])})
+
     # users.append(
-    #    {"name": "felixletsplayyt", "contributions": CommitConnection.getCommitsInYear(year, "felixletsplayyt")})
     # users.append({"name": "robmroi03", "contributions": CommitConnection.getCommitsInYear(year, "robmroi03")})
-    resp = make_response(render_template("index.html.twig", users=users, time=datetime.now().strftime('%H:%M:%S')))
+    #    {"name": "felixletsplayyt", "contributions": CommitConnection.getCommitsInYear(year, "felixletsplayyt")})
+    resp = make_response(render_template("index.html.twig", users=users, time=datetime.fromtimestamp(timeUpdated)
+                                         .strftime('%H:%M:%S')))
     resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
     resp.headers['Pragma'] = "no-cache"
     resp.headers['Expires'] = "0"
@@ -43,7 +48,7 @@ def backend():
                 DatabaseController.remove_user(request.form.get("delete"))
             if request.form.get("username") is not None:
                 DatabaseController.add_user(request.form.get("username"))
-            return "<body onload='window.location='/login'></body>"
+            return '<html><head><meta http-equiv="refresh" content="0; url=/login" /></head></html>'
 
 
 if __name__ == '__main__':

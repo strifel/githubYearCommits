@@ -27,6 +27,16 @@ class DatabaseController:
         database.close()
 
     @staticmethod
+    def get_setting(setting):
+        database = sqlite3.connect("database")
+        result = database.execute("SELECT value FROM settings WHERE setting='" + setting + "'")
+        result_fetched = result.fetchall()
+        if len(result_fetched) == 1:
+            database.close()
+            return result_fetched[0][0]
+        database.close()
+
+    @staticmethod
     def get_user():
         database = sqlite3.connect("database")
         result = database.execute("SELECT username FROM user")
