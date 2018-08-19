@@ -14,5 +14,16 @@
     <input name="delete" type="submit" value="{{ user[0] }}">
 </form>
 {% endfor %}
+<h2>Settings</h2>
+<form method="post" action="/backend">
+    <label for="setting">Setting: </label>
+    <select id="setting" name="setting">
+        <option value="cache">Cache Time</option>
+        <option value="password">Admin password</option>
+        <option value="allow-force">Allow force reload</option>
+    </select><br>
+    <label for="value">Value: </label><input id="value" name="value" type="text"><br>
+    <input type="submit" value="Save.">
+</form>
 <br>
 <button onclick='document.cookie = "gyc_login=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";location.reload();'>Logout</button>

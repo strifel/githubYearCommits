@@ -37,6 +37,13 @@ class DatabaseController:
         database.close()
 
     @staticmethod
+    def set_setting(setting, value):
+        database = sqlite3.connect("database")
+        database.execute("UPDATE settings SET value=? WHERE setting=?", (value, setting))
+        database.commit()
+        database.close()
+
+    @staticmethod
     def get_user():
         database = sqlite3.connect("database")
         result = database.execute("SELECT username FROM user")

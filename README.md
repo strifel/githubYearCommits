@@ -11,7 +11,9 @@ Because counting is needed when looking onto the github profile I made this to a
 6. Go to the main page (remove /login or /backend in the address bar)
 7. enjoy
 ## Useful
-You can change cache duration in database.
+You can change cache duration in settings.
+You can force reload by going to `/force` path(can be disabled)
+Admin can force reload even if disabled
 You can click on count and hover over another to see percentage.
 ## License
 On 26th Juli 2018 this is on MIT License.
