@@ -2,6 +2,8 @@ from flask import Flask
 from flask import render_template
 from flask import make_response
 from flask import request
+import requests as rest
+import json
 from hashlib import sha256
 from connection.ConnectionManager import CommitConnection
 from connection.ConnectionManager import DatabaseController
@@ -68,6 +70,34 @@ def backend():
                 else:
                     DatabaseController.set_setting(request.form.get("setting"), request.form.get("value"))
             return '<html><head><meta http-equiv="refresh" content="0; url=/login" /></head></html>'
+
+
+@app.route('user/<string:user>/<int:year>', methods=['GET'])
+@app.route('/user/<string:user>', methods=['GET'], defaults={"year": datetime.now().strftime("%Y")})
+def user_page(user, year):
+    repos = rest.get("https://api.github.com/users/" + user + "/repos?per_page=100")
+    repos_json = json.loads(repos.text)
+    # languages
+    languages = {}
+    for repository in repos_json:
+        language = repository['language']
+        if languages.get(language) is not None:
+            languages.update({language: languages.get(language) + 1})
+        else:
+            languages.update({language: 1})
+    sorted_languages = sorted(languages.items(), key=operator.itemgetter(1), reverse=True)
+
+    # mail
+    commit_url = repos_json[0]['commits_url'].replace('{/sha}', '')
+    json_commits = json.loads(rest.get(commit_url).text)
+    mail = ""
+    if json_commits[0]['author']['login'] == user:
+        mail = json_commits[0]['commit']['author']['email']
+    # response
+    resp = make_response(render_template("user.html.twig", username=user, contributions=CommitConnection
+                                         .getCommitsInYear(year, user), languages=sorted_languages, email=mail))
+
+    return resp
 
 
 if __name__ == '__main__':

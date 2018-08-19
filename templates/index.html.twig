@@ -14,7 +14,7 @@
     </tr>
     {% for user in users %}
         <tr>
-            <td><a href="https://github.com/{{ user.name }}">{{ user.name }}</a></td>
+            <td><a href="/user/{{ user.name }}">{{ user.name }}</a></td>
             <td class="contributions">{{ user.contributions }}</td>
 
         </tr>

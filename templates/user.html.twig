@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>Backend - Login</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<table>
+    <tr>
+        <td><img src="https://github.com/{{ username }}.png?size=150" width="150" height="150"> </td>
+        <td>
+            <a href="https://github.com/{{ username }}"><h2>{{ username }}</h2></a>
+            <h4>{{ contributions }} contributions this year.</h4>
+            <h4>{{ email }} is his/her git email.</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3>Most used languages:</h3><br>
+            {% for language in languages %}
+            <p> - {{ language[0] }}</p><br>
+            {% endfor %}
+        </td>
+        <td>
+            <h3>Works with:</h3><br>
+            <p>Coming soon</p>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
