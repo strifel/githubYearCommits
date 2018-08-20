@@ -15,7 +15,7 @@
     </tr>
     <tr>
         <td>
-            <h3>Most used languages:</h3><br>
+            <h3>Languages:</h3><br>
             {% for language in languages %}
             <p> - {{ language[0] }}</p><br>
             {% endfor %}
@@ -28,3 +28,8 @@
 </table>
 </body>
 </html>
+<style>
+    td{
+        vertical-align: top;
+    }
+</style>

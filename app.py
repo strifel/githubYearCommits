@@ -72,7 +72,7 @@ def backend():
             return '<html><head><meta http-equiv="refresh" content="0; url=/login" /></head></html>'
 
 
-@app.route('user/<string:user>/<int:year>', methods=['GET'])
+# @app.route('/user/<string:user>/<int:year>', methods=['GET'])
 @app.route('/user/<string:user>', methods=['GET'], defaults={"year": datetime.now().strftime("%Y")})
 def user_page(user, year):
     repos = rest.get("https://api.github.com/users/" + user + "/repos?per_page=100")
@@ -91,7 +91,7 @@ def user_page(user, year):
     commit_url = repos_json[0]['commits_url'].replace('{/sha}', '')
     json_commits = json.loads(rest.get(commit_url).text)
     mail = ""
-    if json_commits[0]['author']['login'] == user:
+    if json_commits[0]['author']['login'].lower() == user.lower():
         mail = json_commits[0]['commit']['author']['email']
     # response
     resp = make_response(render_template("user.html.twig", username=user, contributions=CommitConnection

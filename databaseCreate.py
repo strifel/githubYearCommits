@@ -7,6 +7,7 @@ db.execute("CREATE TABLE IF NOT EXISTS settings (setting string PRIMARY KEY, val
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("password", hashed))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("cache", "1220"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-force", "true"))
+db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-user-unregistered", "true"))
 db.execute("CREATE TABLE IF NOT EXISTS user (username string PRIMARY KEY NOT NULL)")
 db.execute("INSERT INTO user (username) VALUES ('felixletsplayyt')")
 db.commit()
