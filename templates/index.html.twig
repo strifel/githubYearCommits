@@ -3,62 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Leaderboard of Commits</title>
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
 </head>
 <script src="https://unpkg.com/popper.js@1.14.4/dist/umd/popper.js"></script>
 <script src="https://unpkg.com/tooltip.js@1.2.0/dist/umd/tooltip.js"></script>
 <body onload="onLoad()">
+
+<h1>Commits in 2019</h1>
 <table>
-    <tr class="header">
-        <td>Name</td>
-        <td>Commits</td>
-    </tr>
     {% for user in users %}
         <tr>
-            <td><a href="/user/{{ user.name }}">{{ user.name }}</a></td>
-            <td class="contributions">{{ user.contributions }}</td>
-
-        </tr>
+            <td><a class="username" href="/user/{{ user.name }}">{{ user.name }}</a></td>
+            <td><a class="contributions">{{ user.contributions}}</a></td>
+            </tr>
     {% endfor %}
 </table>
-<div class="footer">
-    Refreshed: {{ time }}
-</div>
+
 <script src="/static/percentage.js"></script>
 </body>
 </html>
 <style>
-    body {
-        background-color: lightblue;
-        width: 100%;
-    }
+    
 
-    table {
-        margin: 0 auto;
-    }
+    .username {
+            font-weight: bold;
+            font-size: 25px;
+        }
 
-    td {
-        text-align: left;
-        padding-right: 30px;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border: 3px solid whitesmoke;
-    }
+        .contributions {
+            font-weight: bold;
+            font-size: 25px;
+        }
 
-    .selectedContributions {
-        background-color: blue;
-    }
+        td {
+            text-align: left;
+            padding-right: 30px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
 
-    .header {
-        background-color: deepskyblue;
-    }
+        table {
+            margin: 0 auto;
+        }
 
-    .footer {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        padding: 1rem;
-        background-color: darkblue;
-        text-align: center;
-    }
+        h1 {
+            margin: auto;
+            text-align:center;
+            padding-bottom: 30px;
+            padding-top: 10px;
+        }
+
 </style>
