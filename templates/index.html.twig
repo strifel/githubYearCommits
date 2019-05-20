@@ -2,22 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Leaderboard of Commits</title>
-    
+    <title>Leaderboard of Contributions</title>
+
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
 </head>
-<script src="https://unpkg.com/popper.js@1.14.4/dist/umd/popper.js"></script>
-<script src="https://unpkg.com/tooltip.js@1.2.0/dist/umd/tooltip.js"></script>
-<body onload="onLoad()">
+<body>
 
-<h1>Commits in {{ year }}</h1>
+<h1>Contributions in {{ year }}</h1>
 <table>
     {% for user in users %}
-        <tr>
-            <td><a class="username" href="/user/{{ user.name }}">{{ user.name }}</a></td>
-            <td><a class="contributions">{{ user.contributions}}</a></td>
-            </tr>
+        <tr class="contributionUser">
+            <td class="usernameTD"><a class="username" href="/user/{{ user.name }}">{{ user.name }}</a></td>
+            <td class="contributionsTD"><a class="contributions">{{ user.contributions }}</a></td>
+            <td class="percentageTD"><a class="percentage"></a></td>
+        </tr>
     {% endfor %}
 </table>
 
@@ -25,34 +24,48 @@
 </body>
 </html>
 <style>
-    
+    .percentageTD {
+        border-left: 0;
+        padding-left: 0;
+    }
+
+    .percentage {
+        font-size: 12px;
+    }
 
     .username {
-            font-weight: bold;
-            font-size: 25px;
-        }
+        font-weight: bold;
+        font-size: 25px;
+    }
 
-        .contributions {
-            font-weight: bold;
-            font-size: 25px;
-        }
+    .contributionsTD {
+        padding-right: 0;
+        border-right: 0;
+    }
 
-        td {
-            text-align: left;
-            padding-right: 30px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
+    .contributions {
+        text-align: right;
 
-        table {
-            margin: 0 auto;
-        }
+        font-weight: bold;
+        font-size: 25px;
+    }
 
-        h1 {
-            margin: auto;
-            text-align:center;
-            padding-bottom: 30px;
-            padding-top: 10px;
-        }
+    td {
+        text-align: left;
+        padding-right: 30px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    table {
+        margin: 0 auto;
+    }
+
+    h1 {
+        margin: auto;
+        text-align: center;
+        padding-bottom: 30px;
+        padding-top: 10px;
+    }
 
 </style>
