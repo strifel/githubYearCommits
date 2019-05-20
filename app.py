@@ -20,7 +20,7 @@ def main_page(reload):
     global users
     year = datetime.now().strftime("%Y")
     if (reload and (DatabaseController.get_setting("allow-force") == "true" or
-                    request.cookies.get("gyc_login") == DatabaseController.getPassword())) or\
+                    request.cookies.get("gyc_login") == DatabaseController.getPassword())) or \
             datetime.now().timestamp() - timeUpdated > DatabaseController.get_setting("cache"):
         users = list()
         timeUpdated = datetime.now().timestamp()
@@ -95,6 +95,11 @@ def user_page(user, year):
                                          .getCommitsInYear(year, user), languages=sorted_languages, email=mail))
 
     return resp
+
+# Serve static directory
+@app.route('/static/<string:path>', methods=['GET'])
+def static_files(path):
+    return send_from_directory('static/', path)
 
 # Allow acme to pass for e.g. lets Encrypt certificate creation
 @app.route('/.well-known/acme-challenge/<string:path>', methods=['GET'])
