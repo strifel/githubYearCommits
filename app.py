@@ -1,7 +1,4 @@
-from flask import Flask
-from flask import render_template
-from flask import make_response
-from flask import request
+from flask import render_template, make_response, send_from_directory, request, Flask
 import requests as rest
 import json
 from hashlib import sha256
@@ -10,7 +7,7 @@ from connection.ConnectionManager import DatabaseController
 from datetime import datetime
 import operator
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 # not needed but I am afraid deleting it.
 users = list()
 timeUpdated = 0
@@ -98,6 +95,11 @@ def user_page(user, year):
                                          .getCommitsInYear(year, user), languages=sorted_languages, email=mail))
 
     return resp
+
+# Allow acme to pass for e.g. lets Encrypt certificate creation
+@app.route('/.well-known/acme-challenge/<string:path>', methods=['GET'])
+def acme(path):
+    return send_from_directory('.well-known/acme-challenge/', path)
 
 
 if __name__ == '__main__':
