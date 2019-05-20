@@ -2,6 +2,10 @@
 <head>
     <title>Backend - Login</title>
     <meta charset="UTF-8">
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
+    
 </head>
 <body>
 <table>
@@ -9,8 +13,10 @@
         <td><img src="https://github.com/{{ username }}.png?size=150" width="150" height="150"> </td>
         <td>
             <a href="https://github.com/{{ username }}"><h2>{{ username }}</h2></a>
-            <h4>{{ contributions }} contributions this year.</h4>
-            <h4>{{ email }} is his/her git email.</h4>
+            <h4>Contributions ({{ year }}): {{ contributions }}</h4>
+            <h4>Email: 
+            <a href="mailto:{{ email }}">{{ email }}</a>
+            </h4> 
         </td>
     </tr>
     <tr>
@@ -20,16 +26,13 @@
             <p> - {{ language[0] }}</p><br>
             {% endfor %}
         </td>
-        <td>
-            <h3>Works with:</h3><br>
-            <p>Coming soon</p>
-        </td>
     </tr>
 </table>
 </body>
 </html>
 <style>
-    td{
+    td {
+        line-height: 10px;
         vertical-align: top;
     }
 </style>
