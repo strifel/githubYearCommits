@@ -39,7 +39,7 @@ def main_page(reload):
     # users.append({"name": "robmroi03", "contributions": CommitConnection.getCommitsInYear(year, "robmroi03")})
     #    {"name": "felixletsplayyt", "contributions": CommitConnection.getCommitsInYear(year, "felixletsplayyt")})
     resp = make_response(render_template("index.html.twig", users=users, time=datetime.fromtimestamp(timeUpdated)
-                                         .strftime('%H:%M:%S')), year=year)
+                                         .strftime('%H:%M:%S'), year=year))
     resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
     resp.headers['Pragma'] = "no-cache"
     resp.headers['Expires'] = "0"
