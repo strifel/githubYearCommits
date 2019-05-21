@@ -1,7 +1,4 @@
-from flask import Flask
-from flask import render_template
-from flask import make_response
-from flask import request
+from flask import render_template, make_response, send_from_directory, request, Flask
 import requests as rest
 import json
 from hashlib import sha256
@@ -10,7 +7,7 @@ from connection.ConnectionManager import DatabaseController
 from datetime import datetime
 import operator
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 # not needed but I am afraid deleting it.
 users = list()
 timeUpdated = 0
@@ -23,7 +20,7 @@ def main_page(reload):
     global users
     year = datetime.now().strftime("%Y")
     if (reload and (DatabaseController.get_setting("allow-force") == "true" or
-                    request.cookies.get("gyc_login") == DatabaseController.getPassword())) or\
+                    request.cookies.get("gyc_login") == DatabaseController.getPassword())) or \
             datetime.now().timestamp() - timeUpdated > DatabaseController.get_setting("cache"):
         users = list()
         timeUpdated = datetime.now().timestamp()
@@ -39,7 +36,7 @@ def main_page(reload):
     # users.append({"name": "robmroi03", "contributions": CommitConnection.getCommitsInYear(year, "robmroi03")})
     #    {"name": "felixletsplayyt", "contributions": CommitConnection.getCommitsInYear(year, "felixletsplayyt")})
     resp = make_response(render_template("index.html.twig", users=users, time=datetime.fromtimestamp(timeUpdated)
-                                         .strftime('%H:%M:%S')), year=year)
+                                         .strftime('%H:%M:%S'), year=year))
     resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
     resp.headers['Pragma'] = "no-cache"
     resp.headers['Expires'] = "0"
@@ -98,6 +95,16 @@ def user_page(user, year):
                                          .getCommitsInYear(year, user), languages=sorted_languages, email=mail))
 
     return resp
+
+# Serve static directory
+@app.route('/static/<string:path>', methods=['GET'])
+def static_files(path):
+    return send_from_directory('static/', path)
+
+# Allow acme to pass for e.g. lets Encrypt certificate creation
+@app.route('/.well-known/acme-challenge/<string:path>', methods=['GET'])
+def acme(path):
+    return send_from_directory('.well-known/acme-challenge/', path)
 
 
 if __name__ == '__main__':
