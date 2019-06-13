@@ -85,24 +85,29 @@
 <script>
     function changeMode() {
         let button = document.getElementById("darkMode");
-        if (button.innerText==="Dark Mode") { //Change to dark mode
+        if (button.innerText === "Dark Mode") { //Change to dark mode
+            localStorage.setItem("dark", "true");
             button.innerText = "Light Mode";
             button.style.backgroundColor = "#f5f5f5";
             button.style.color = "#1D1F21";
             document.body.style.backgroundColor = "#1D1F21";
             const elements = document.getElementsByClassName("text");
-            for (let i = 0; i<elements.length; i++) {
+            for (let i = 0; i < elements.length; i++) {
                 elements[i].style.color = "#f5f5f5";
             }
         } else { //change to Light Mode
+            localStorage.setItem("dark", "false");
             button.innerText = "Dark Mode";
             button.style.backgroundColor = "#1D1F21";
             button.style.color = "#f5f5f5";
             document.body.style.backgroundColor = "#f5f5f5";
             const elements = document.getElementsByClassName("text");
-            for (let i = 0; i<elements.length; i++) {
+            for (let i = 0; i < elements.length; i++) {
                 elements[i].style.color = "#1D1F21";
             }
         }
+    }
+    if (localStorage.getItem("dark") === "true") {
+         changeMode()
     }
 </script>
