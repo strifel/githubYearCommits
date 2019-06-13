@@ -16,6 +16,8 @@ class CommitConnection:
 
 
 class DatabaseController:
+    users = []
+
     @staticmethod
     def getPassword():
         database = sqlite3.connect("database")
@@ -45,13 +47,17 @@ class DatabaseController:
 
     @staticmethod
     def get_user():
-        database = sqlite3.connect("database")
-        result = database.execute("SELECT username FROM user")
-        result_fetched = result.fetchall()
-        if len(result_fetched) > 0:
+        if not DatabaseController.users:
+            database = sqlite3.connect("database")
+            result = database.execute("SELECT username FROM user")
+            result_fetched = result.fetchall()
+            if len(result_fetched) > 0:
+                database.close()
+                DatabaseController.users = result_fetched
+                return result_fetched
             database.close()
-            return result_fetched
-        database.close()
+        else:
+            return DatabaseController.users
 
     @staticmethod
     def add_user(user):
@@ -59,6 +65,7 @@ class DatabaseController:
         database.execute("INSERT INTO user (username) VALUES (?)", (user,))
         database.commit()
         database.close()
+        DatabaseController.users = []
 
     @staticmethod
     def remove_user(user):
@@ -66,3 +73,4 @@ class DatabaseController:
         database.execute("DELETE FROM user WHERE username=?", (user,))
         database.commit()
         database.close()
+        DatabaseController.users = []
