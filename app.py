@@ -83,16 +83,17 @@ def user_page(user, year):
         else:
             languages.update({language: 1})
     sorted_languages = sorted(languages.items(), key=operator.itemgetter(1), reverse=True)
-
     # mail
     commit_url = repos_json[0]['commits_url'].replace('{/sha}', '')
     json_commits = json.loads(rest.get(commit_url).text)
     mail = ""
     if json_commits[0]['author']['login'].lower() == user.lower():
         mail = json_commits[0]['commit']['author']['email']
+    # commit streak
+    commit_streak = CommitConnection.getCommitStreak(user)
     # response
     resp = make_response(render_template("user.html.twig", username=user, contributions=CommitConnection
-                                         .getCommitsInYear(year, user), year=year, languages=sorted_languages, email=mail))
+                                         .getCommitsInYear(year, user), year=year, languages=sorted_languages, email=mail, streak=commit_streak))
 
     return resp
 

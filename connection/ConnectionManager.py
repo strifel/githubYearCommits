@@ -1,6 +1,7 @@
 import requests
 import json
 import sqlite3
+from datetime import datetime, timedelta
 
 
 class CommitConnection:
@@ -13,6 +14,24 @@ class CommitConnection:
             if contribution["date"].startswith(str(year) + "-"):
                 count = count + contribution["count"]
         return count
+
+    @staticmethod
+    def getCommitStreak(username):
+        response = requests.get("https://github-contributions-api.now.sh/v1/" + username)
+        jsonResponse = json.loads(response.text)
+        streak = 0
+        streakEnd = False
+        while not streakEnd:
+            date = datetime.now() - timedelta(days=streak)
+            for contribution in jsonResponse["contributions"]:
+                if contribution['date'] == date.strftime("%Y-%m-%d"):
+                    if contribution['count'] > 0:
+                        streak += 1
+                    else:
+                        streakEnd = True
+                    break
+        return streak
+
 
 
 class DatabaseController:
