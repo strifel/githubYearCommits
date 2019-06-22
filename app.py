@@ -69,8 +69,8 @@ def backend():
             return '<html><head><meta http-equiv="refresh" content="0; url=/login" /></head></html>'
 
 
-# @app.route('/user/<string:user>/<int:year>', methods=['GET'])
-@app.route('/user/<string:user>', methods=['GET'], defaults={"year": datetime.now().strftime("%Y")})
+@app.route('/user/<string:user>/<int:year>', methods=['GET'])
+@app.route('/user/<string:user>', methods=['GET'], defaults={"year": int(datetime.now().strftime("%Y"))})
 def user_page(user, year):
     repos = rest.get("https://api.github.com/users/" + user + "/repos?per_page=100")
     repos_json = json.loads(repos.text)
@@ -92,7 +92,7 @@ def user_page(user, year):
         mail = json_commits[0]['commit']['author']['email']
     # response
     resp = make_response(render_template("user.html.twig", username=user, contributions=CommitConnection
-                                         .getCommitsInYear(year, user), languages=sorted_languages, email=mail))
+                                         .getCommitsInYear(year, user), year=year, languages=sorted_languages, email=mail))
 
     return resp
 

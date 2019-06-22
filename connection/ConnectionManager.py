@@ -10,7 +10,7 @@ class CommitConnection:
         jsonResponse = json.loads(response.text)
         count = 0
         for contribution in jsonResponse["contributions"]:
-            if contribution["date"].startswith(year + "-"):
+            if contribution["date"].startswith(str(year) + "-"):
                 count = count + contribution["count"]
         return count
 
