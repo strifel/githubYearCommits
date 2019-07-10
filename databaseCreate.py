@@ -9,6 +9,6 @@ db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("cache", "122
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-force", "true"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-user-unregistered", "true"))
 db.execute("CREATE TABLE IF NOT EXISTS user (username string PRIMARY KEY NOT NULL)")
-db.execute("INSERT INTO user (username) VALUES ('felixletsplayyt')")
+db.execute("INSERT INTO user (username) VALUES ('strifel')")
 db.commit()
 db.close()
