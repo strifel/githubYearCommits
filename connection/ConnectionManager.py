@@ -6,13 +6,21 @@ from datetime import datetime, timedelta
 
 class CommitConnection:
     @staticmethod
-    def getCommitsInYear(year, username):
+    def getCommitsInYear(year_lookup, username):
+        response = requests.get("https://github-contributions-api.now.sh/v1/" + username)
+        jsonResponse = json.loads(response.text)
+        for year in jsonResponse["years"]:
+            if year['year'] == str(year_lookup):
+                return year['total']
+        return 0
+
+    @staticmethod
+    def getTotalCommits(username):
         response = requests.get("https://github-contributions-api.now.sh/v1/" + username)
         jsonResponse = json.loads(response.text)
         count = 0
-        for contribution in jsonResponse["contributions"]:
-            if contribution["date"].startswith(str(year) + "-"):
-                count = count + contribution["count"]
+        for year in jsonResponse["years"]:
+            count = count + year['total']
         return count
 
     @staticmethod

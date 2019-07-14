@@ -18,7 +18,11 @@ timeUpdated = 0
 def main_page(reload):
     global timeUpdated
     global users
-    year = datetime.now().strftime("%Y")
+    timespan = ""
+    duration = DatabaseController.get_setting("duration")
+    year = ""
+    if duration == "year":
+        year = datetime.now().strftime("%Y")
     if (reload and (DatabaseController.get_setting("allow-force") == "true" or
                     request.cookies.get("gyc_login") == DatabaseController.getPassword())) or \
             datetime.now().timestamp() - timeUpdated > DatabaseController.get_setting("cache"):
@@ -26,17 +30,25 @@ def main_page(reload):
         timeUpdated = datetime.now().timestamp()
         user_contributions = {}
         for user in DatabaseController.get_user():
-            user_contributions.update({user[0]: CommitConnection.getCommitsInYear(year, user[0])})
+            if duration == "year":
+                user_contributions.update({user[0]: CommitConnection.getCommitsInYear(year, user[0])})
+            elif duration == "eternity":
+                user_contributions.update({user[0]: CommitConnection.getTotalCommits(user[0])})
+            else:
+                user_contributions.update({user[0]: 0})
         sorted_contributions = sorted(user_contributions.items(), key=operator.itemgetter(1), reverse=True)
         for user in sorted_contributions:
             users.append({"name": user[0], "contributions": user[1]})
-
+    if duration == "year":
+        timespan = "in " + year
+    elif duration == "eternity":
+        timespan = "ever"
     # users.append({"name": user[0], "contributions": CommitConnection.getCommitsInYear(year, user[0])})
     # users.append(
     # users.append({"name": "robmroi03", "contributions": CommitConnection.getCommitsInYear(year, "robmroi03")})
     #    {"name": "felixletsplayyt", "contributions": CommitConnection.getCommitsInYear(year, "felixletsplayyt")})
     resp = make_response(render_template("index.html.twig", users=users, time=datetime.fromtimestamp(timeUpdated)
-                                         .strftime('%H:%M:%S'), year=year))
+                                         .strftime('%H:%M:%S'), timespan=timespan))
     resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
     resp.headers['Pragma'] = "no-cache"
     resp.headers['Expires'] = "0"

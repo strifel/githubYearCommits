@@ -8,6 +8,7 @@ db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("password", h
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("cache", "1220"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-force", "true"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-user-unregistered", "true"))
+db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("duration", "year"))
 db.execute("CREATE TABLE IF NOT EXISTS user (username string PRIMARY KEY NOT NULL)")
 db.execute("INSERT INTO user (username) VALUES ('strifel')")
 db.commit()
