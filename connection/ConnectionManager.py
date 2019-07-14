@@ -30,14 +30,17 @@ class CommitConnection:
         streak = 0
         streakEnd = False
         while not streakEnd:
-            date = datetime.now() - timedelta(days=streak)
+            date = datetime.now() - timedelta(days=streak + 1)
             for contribution in jsonResponse["contributions"]:
-                if contribution['date'] == date.strftime("%Y-%m-%d"):
+                if contribution['date'] == datetime.now().strftime("%Y-%m-%d"):
+                    if contribution['count'] > 0:
+                        streak += 1
+                elif contribution['date'] == date.strftime("%Y-%m-%d"):
                     if contribution['count'] > 0:
                         streak += 1
                     else:
                         streakEnd = True
-                    break
+                        break
         return streak
 
 
