@@ -72,13 +72,25 @@ def backend():
                 DatabaseController.remove_user(request.form.get("delete"))
             if request.form.get("username") is not None:
                 DatabaseController.add_user(request.form.get("username"))
-            if request.form.get("setting") is not None:
-                if request.form.get("setting") == "password":
-                    hashed = sha256(request.form.get("value").encode()).hexdigest()
-                    DatabaseController.set_setting("password", hashed)
-                else:
-                    DatabaseController.set_setting(request.form.get("setting"), request.form.get("value"))
             return '<html><head><meta http-equiv="refresh" content="0; url=/login" /></head></html>'
+
+
+@app.route('/backend/setting/<string:settingName>', methods=['GET', 'PUT'])
+def setting(settingName):
+    if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+        if request.method == 'PUT':
+            if 'value' in request.json:
+                value = request.json['value']
+                if settingName == "password":
+                    value = sha256(value.encode()).hexdigest()
+                DatabaseController.set_setting(settingName, value)
+        resp = make_response(json.dumps({"name": settingName, "value": DatabaseController.get_setting(settingName)}))
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
+    else:
+        resp = make_response(json.dumps({"error": "Login not found"}))
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
 
 
 @app.route('/user/<string:user>/<int:year>', methods=['GET'])

@@ -34,17 +34,16 @@
     <div class="boxOne">
         <div class="object">
             <h2>Settings</h2>
-            <form method="post" action="/backend">
                 <label for="setting">Setting: </label>
-                <select id="setting" name="setting">
+                <select id="setting">
+                    <option hidden>Select a setting</option>
                     <option value="cache">Cache Time</option>
                     <option value="password">Admin password</option>
                     <option value="allow-force">Allow force reload</option>
                     <option value="duration">Duration of challenge</option>
                 </select><br><br>
-                <label for="value">Value: </label><input id="value" name="value" type="text"><br><br>
-                <input type="submit" value="Save.">
-            </form>
+                <label for="settingValue">Value: </label><input id="settingValue" type="text"><br><br>
+                <button onclick="saveSetting()">Save</button>
         </div>
     </div>
     <div class="boxTwo">
@@ -56,6 +55,7 @@
         </div>
     </div>
 </div>
+<script src="/static/admin.js"></script>
 </body>
 </html>
 <style>
