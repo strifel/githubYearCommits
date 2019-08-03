@@ -56,23 +56,25 @@ def main_page(reload):
 
 
 @app.route('/login', methods=['GET'])
-@app.route('/backend', methods=['GET', 'POST'])
-def backend():
-    if request.method == "GET":
-        if request.cookies.get("gyc_login") == DatabaseController.getPassword():
-            resp = make_response(render_template("backend.html.twig", users=DatabaseController.get_user()))
-            return resp
-        else:
-            resp = make_response(render_template("login.html.twig"))
-            resp.delete_cookie("gyc_login")
-            return resp
+@app.route('/admin', methods=['GET'])
+def admin():
+    if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+        resp = make_response(render_template("admin.html.twig", users=DatabaseController.get_user()))
+        return resp
     else:
-        if request.cookies.get("gyc_login") == DatabaseController.getPassword():
-            if request.form.get("delete") is not None:
-                DatabaseController.remove_user(request.form.get("delete"))
-            if request.form.get("username") is not None:
-                DatabaseController.add_user(request.form.get("username"))
-            return '<html><head><meta http-equiv="refresh" content="0; url=/login" /></head></html>'
+        resp = make_response(render_template("login.html.twig"))
+        resp.delete_cookie("gyc_login")
+        return resp
+
+
+@app.route('/backend', methods=['POST'])
+def backend():
+    if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+        if request.form.get("delete") is not None:
+            DatabaseController.remove_user(request.form.get("delete"))
+        if request.form.get("username") is not None:
+            DatabaseController.add_user(request.form.get("username"))
+        return '<html><head><meta http-equiv="refresh" content="0; url=/admin" /></head></html>'
 
 
 @app.route('/backend/setting/<string:settingName>', methods=['GET', 'PUT'])

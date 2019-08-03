@@ -24,7 +24,7 @@
         var md = forge.md.sha256.create();
         md.update(password);
         document.cookie = "gyc_login=" + md.digest().toHex();
-        location.reload(true);
+        location.href = '/admin';
     }
 </script>
 </body>

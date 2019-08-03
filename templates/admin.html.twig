@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Main</title>
+    <meta charset="UTF-8">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
+
+    <style>
+        .col-md-5 {
+            margin: 20px auto;
+            width: 98%;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align: center">Configuration</h1>
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h2>Add user</h2>
+                <form method="post" action="/backend">
+                    <label for="username">Username:</label><input class="form-control" name="username"
+                                                                  type="text"><br><br>
+                    <input class="btn btn-primary" type="submit" value="Add user">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h2>Remove user</h2>
+                {% for user in users %}
+                    <form method="post" action="/backend">
+                        <input class="btn btn-danger" name="delete" type="submit" value="{{ user[0] }}">
+                    </form><br><br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h2>Settings</h2>
+                <label for="setting">Setting: </label>
+                <select id="setting" class="form-control">
+                    <option hidden value="placeholder">Select a setting</option>
+                    <option value="cache">Cache Time</option>
+                    <option value="password">Admin password</option>
+                    <option value="allow-force">Allow force reload</option>
+                    <option value="duration">Duration of challenge</option>
+                </select><br><br>
+                <label for="settingValue">Value: </label><input id="settingValue" class="form-control"
+                                                                type="text"><br><br>
+                <button class="btn btn-primary" onclick="saveSetting()">Save</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body">
+                <h2>Logout</h2>
+                <button class="btn btn-primary"
+                        onclick='document.cookie = "gyc_login=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";location.reload();'>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/admin.js"></script>
+</body>
+</html>

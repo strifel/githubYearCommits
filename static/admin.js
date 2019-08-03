@@ -3,7 +3,7 @@
 // Settings
 document.getElementById('setting').onchange = () => {
     let setting = document.getElementById('setting').value;
-    if (!setting.hidden) {
+    if (setting !== 'placeholder') {
         let settingValueRequest = new XMLHttpRequest();
         settingValueRequest.onreadystatechange = () => {
             if (settingValueRequest.readyState === 4 && settingValueRequest.status === 200) {
