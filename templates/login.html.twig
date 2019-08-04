@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Backend - Login</title>
+    <title>Admin - Login</title>
     <meta charset="UTF-8">
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
@@ -9,12 +9,13 @@
 </head>
 <body>
 <div class="login">
-    <h1 id="1">Backend</h1>
+    <h1 id="1">Configuration</h1>
 
-    <h3>Please enter the backend password</h3>
+    <h3>Please enter the admin password</h3>
 
     <input id="password" type="password">
     <button class="btn btn-primary" onclick="login()">Login</button>
+    <p id="error" style="color: red;"></p>
 </div>
 <script src="https://unpkg.com/node-forge@0.7.0/dist/forge.min.js"></script>
 <script>
@@ -24,7 +25,21 @@
         var md = forge.md.sha256.create();
         md.update(password);
         document.cookie = "gyc_login=" + md.digest().toHex();
-        location.href = '/admin';
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              location.href = '/admin';
+            } else if (request.status === 403) {
+              document.getElementById("error").innerText = "Password wrong!";
+              setTimeout(() => {
+                document.getElementById("error").innerText = "";
+              }, 700);
+            }
+          }
+        }
+        request.open("GET", "/backend/setting/password");
+        request.send();
     }
 </script>
 </body>

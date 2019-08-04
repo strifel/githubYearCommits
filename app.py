@@ -92,6 +92,7 @@ def setting(settingName):
     else:
         resp = make_response(json.dumps({"error": "Login not found"}))
         resp.headers['Content-Type'] = 'application/json'
+        resp.status_code = 403
         return resp
 
 
