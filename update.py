@@ -34,6 +34,11 @@ if version == VERSION:
 if version < 0.9:
     db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("duration", "year"))
     print("Updated to 0.9: You can now change the duration between year and eternity")
+# Check if version is prior 1.1 (Huge reworks)
+if version < 1.1:
+    db.execute("ALTER TABLE users RENAME TO participant")
+    print("Updated to 1.1: Enjoy new changes!")
+
 
 db.execute("UPDATE settings SET value = ? WHERE setting = 'version'", (str(VERSION), ))
 db.commit()

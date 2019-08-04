@@ -79,7 +79,7 @@ class DatabaseController:
     def get_participants():
         if not DatabaseController.users:
             database = sqlite3.connect("database")
-            result = database.execute("SELECT username FROM user")
+            result = database.execute("SELECT username FROM participant")
             result_fetched = result.fetchall()
             if len(result_fetched) > 0:
                 database.close()
@@ -92,7 +92,7 @@ class DatabaseController:
     @staticmethod
     def add_participants(user):
         database = sqlite3.connect("database")
-        database.execute("INSERT INTO user (username) VALUES (?)", (user,))
+        database.execute("INSERT INTO participant (username) VALUES (?)", (user,))
         database.commit()
         database.close()
         DatabaseController.users = []
@@ -100,7 +100,7 @@ class DatabaseController:
     @staticmethod
     def remove_participants(user):
         database = sqlite3.connect("database")
-        database.execute("DELETE FROM user WHERE username=?", (user,))
+        database.execute("DELETE FROM participant WHERE username=?", (user,))
         database.commit()
         database.close()
         DatabaseController.users = []
