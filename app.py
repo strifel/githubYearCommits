@@ -119,6 +119,13 @@ def setting(settingName):
 @app.route('/user/<string:user>/<int:year>', methods=['GET'])
 @app.route('/user/<string:user>', methods=['GET'], defaults={"year": int(datetime.now().strftime("%Y"))})
 def user_page(user, year):
+    if DatabaseController.get_setting("allow-user-unregistered") == "false":
+        found = False
+        for dbUser in DatabaseController.get_participants():
+            if dbUser[0] == user:
+                found = True
+        if not found:
+            return make_response("<h1>User not found</h1>", 404)
     repos = rest.get("https://api.github.com/users/" + user + "/repos?per_page=100")
     repos_json = json.loads(repos.text)
     # languages
