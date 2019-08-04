@@ -1,0 +1,5 @@
+.idea
+.well-known
+__pycache__
+database
+venv
