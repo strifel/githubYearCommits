@@ -1,5 +1,5 @@
 import sqlite3
-from version import VERSION
+from version import VERSION, DEV, DEV_STABLE
 print("This is the update Script!")
 print("This script will update your database after you updated the codebase")
 print("Update the codebase with git pull, if you havent!")
@@ -18,7 +18,17 @@ version = float(versionRequest[0][0])
 # Check if version is already newest Version
 if version == VERSION:
     print("Already on newest version!")
-    exit(0)
+    if DEV:
+        print("You updated to a dev commit. Okay...")
+        continueInput = input("Do you really want to continue (type continue to continue)? This is not a stable "
+                              "version (Manually changing database values/resetting the database, could be needed)! "
+                              "Recommended commit is " + DEV_STABLE + " ")
+        if continueInput != "continue":
+            print("Good choice!")
+            exit(0)
+        print("Ok. Updating.... (Your fault if you have to recreate the database. (rm database and python3 install.py)")
+    else:
+        exit(0)
 
 # Check if version is prior 0.9
 if version < 0.9:
