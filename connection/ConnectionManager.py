@@ -76,7 +76,7 @@ class DatabaseController:
         database.close()
 
     @staticmethod
-    def get_user():
+    def get_participants():
         if not DatabaseController.users:
             database = sqlite3.connect("database")
             result = database.execute("SELECT username FROM user")
@@ -90,7 +90,7 @@ class DatabaseController:
             return DatabaseController.users
 
     @staticmethod
-    def add_user(user):
+    def add_participants(user):
         database = sqlite3.connect("database")
         database.execute("INSERT INTO user (username) VALUES (?)", (user,))
         database.commit()
@@ -98,7 +98,7 @@ class DatabaseController:
         DatabaseController.users = []
 
     @staticmethod
-    def remove_user(user):
+    def remove_participants(user):
         database = sqlite3.connect("database")
         database.execute("DELETE FROM user WHERE username=?", (user,))
         database.commit()

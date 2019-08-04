@@ -1,4 +1,6 @@
-from flask import render_template, make_response, send_from_directory, request, Flask
+from sqlite3 import IntegrityError
+
+from flask import render_template, make_response, send_from_directory, send_file, request, Flask
 import requests as rest
 import json
 from hashlib import sha256
@@ -29,7 +31,7 @@ def main_page(reload):
         users = list()
         timeUpdated = datetime.now().timestamp()
         user_contributions = {}
-        for user in DatabaseController.get_user():
+        for user in DatabaseController.get_participants():
             if duration == "year":
                 user_contributions.update({user[0]: CommitConnection.getCommitsInYear(year, user[0])})
             elif duration == "eternity":
@@ -59,7 +61,7 @@ def main_page(reload):
 @app.route('/admin', methods=['GET'])
 def admin():
     if request.cookies.get("gyc_login") == DatabaseController.getPassword():
-        resp = make_response(render_template("admin.html.twig", users=DatabaseController.get_user()))
+        resp = make_response(send_file("web/admin.html"))
         return resp
     else:
         resp = make_response(render_template("login.html.twig"))
@@ -67,14 +69,32 @@ def admin():
         return resp
 
 
-@app.route('/backend', methods=['POST'])
-def backend():
+@app.route('/backend/participants/<string:username>', methods=['POST', 'DELETE'])
+@app.route('/backend/participants', methods=['GET'], defaults={"username": None})
+def participants(username):
     if request.cookies.get("gyc_login") == DatabaseController.getPassword():
-        if request.form.get("delete") is not None:
-            DatabaseController.remove_user(request.form.get("delete"))
-        if request.form.get("username") is not None:
-            DatabaseController.add_user(request.form.get("username"))
-        return '<html><head><meta http-equiv="refresh" content="0; url=/admin" /></head></html>'
+        if request.method == 'GET':
+            entries = []
+            for row in DatabaseController.get_participants():
+                entries.append(row[0])
+            resp = make_response(json.dumps(entries))
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+        elif request.method == 'POST':
+            try:
+                DatabaseController.add_participants(username)
+            except IntegrityError:
+                resp = make_response(json.dumps({"error": "Participant already exists"}), 400)
+            else:
+                resp = make_response(json.dumps({"message": "Added participant!"}), 201)
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+        elif request.method == 'DELETE':
+            DatabaseController.remove_participants(username)
+            resp = make_response(json.dumps({"message": "Removed participant!"}))
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+            pass
 
 
 @app.route('/backend/setting/<string:settingName>', methods=['GET', 'PUT'])
