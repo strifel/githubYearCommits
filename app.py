@@ -118,9 +118,8 @@ def setting(settingName):
         return resp
 
 
-@app.route('/user/<string:user>/<int:year>', methods=['GET'])
-@app.route('/user/<string:user>', methods=['GET'], defaults={"year": int(datetime.now().strftime("%Y"))})
-def user_page(user, year):
+@app.route('/user/<string:user>', methods=['GET'])
+def user_page(user):
     if DatabaseController.get_setting("allow-user-unregistered") == "false":
         found = False
         for dbUser in DatabaseController.get_participants():
@@ -128,6 +127,11 @@ def user_page(user, year):
                 found = True
         if not found:
             return make_response("<h1>User not found</h1>", 404)
+    # Finding year in query string
+    if "contributions_year" in request.args:
+        year = int(request.args['contributions_year'])
+    else:
+        year = int(datetime.now().strftime("%Y"))
     repos = rest.get("https://api.github.com/users/" + user + "/repos?per_page=100")
     repos_json = json.loads(repos.text)
     # languages
