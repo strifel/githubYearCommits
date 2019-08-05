@@ -10,6 +10,7 @@ db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("cache", "122
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-force", "true"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-user-unregistered", "true"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("duration", "year"))
+db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("dark-mode-default", "false"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("version", str(VERSION)))
 db.execute("CREATE TABLE IF NOT EXISTS participant (username string PRIMARY KEY NOT NULL)")
 db.execute("INSERT INTO participant (username) VALUES ('strifel')")

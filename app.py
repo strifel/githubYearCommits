@@ -99,7 +99,9 @@ def participants(username):
 
 @app.route('/backend/setting/<string:settingName>', methods=['GET', 'PUT'])
 def setting(settingName):
-    if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+    # Allow access only with login, or to dark mode variable
+    if request.cookies.get("gyc_login") == DatabaseController.getPassword() \
+            or (settingName == "dark-mode-default" and request.method == 'GET'):
         if request.method == 'PUT':
             if 'value' in request.json:
                 value = request.json['value']

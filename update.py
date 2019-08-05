@@ -37,6 +37,7 @@ if version < 0.9:
 # Check if version is prior 1.1 (Huge reworks)
 if version < 1.1:
     db.execute("ALTER TABLE users RENAME TO participant")
+    db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("dark-mode-default", "false"))
     print("Updated to 1.1: Enjoy new changes!")
 
 
