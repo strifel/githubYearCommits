@@ -64,7 +64,7 @@ def admin():
         resp = make_response(send_file("web/admin.html"))
         return resp
     else:
-        resp = make_response(render_template("login.html.twig"))
+        resp = make_response(send_file("web/login.html"))
         resp.delete_cookie("gyc_login")
         return resp
 
