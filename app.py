@@ -13,6 +13,7 @@ app = Flask(__name__, static_url_path='')
 # not needed but I am afraid deleting it.
 users = list()
 timeUpdated = 0
+database = DatabaseController()
 
 
 @app.route('/', methods=['GET'], defaults={"reload": False})
@@ -21,17 +22,17 @@ def main_page(reload):
     global timeUpdated
     global users
     timespan = ""
-    duration = DatabaseController.get_setting("duration")
+    duration = database.get_setting("duration")
     year = ""
     if duration == "year":
         year = datetime.now().strftime("%Y")
-    if (reload and (DatabaseController.get_setting("allow-force") == "true" or
-                    request.cookies.get("gyc_login") == DatabaseController.getPassword())) or \
-            datetime.now().timestamp() - timeUpdated > DatabaseController.get_setting("cache"):
+    if (reload and (database.get_setting("allow-force") == "true" or
+                    request.cookies.get("gyc_login") == database.getPassword())) or \
+            datetime.now().timestamp() - timeUpdated > database.get_setting("cache"):
         users = list()
         timeUpdated = datetime.now().timestamp()
         user_contributions = {}
-        for user in DatabaseController.get_participants():
+        for user in database.get_participants():
             if duration == "year":
                 user_contributions.update({user[0]: CommitConnection.getCommitsInYear(year, user[0])})
             elif duration == "eternity":
@@ -60,7 +61,7 @@ def main_page(reload):
 @app.route('/login', methods=['GET'])
 @app.route('/admin', methods=['GET'])
 def admin():
-    if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+    if request.cookies.get("gyc_login") == database.getPassword():
         resp = make_response(send_file("web/admin.html"))
         return resp
     else:
@@ -72,17 +73,17 @@ def admin():
 @app.route('/backend/participants/<string:username>', methods=['POST', 'DELETE'])
 @app.route('/backend/participants', methods=['GET'], defaults={"username": None})
 def participants(username):
-    if request.cookies.get("gyc_login") == DatabaseController.getPassword():
+    if request.cookies.get("gyc_login") == database.getPassword():
         if request.method == 'GET':
             entries = []
-            for row in DatabaseController.get_participants():
+            for row in database.get_participants():
                 entries.append(row[0])
             resp = make_response(json.dumps(entries))
             resp.headers['Content-Type'] = 'application/json'
             return resp
         elif request.method == 'POST':
             try:
-                DatabaseController.add_participants(username)
+                database.add_participants(username)
             except IntegrityError:
                 resp = make_response(json.dumps({"error": "Participant already exists"}), 400)
             else:
@@ -90,7 +91,7 @@ def participants(username):
             resp.headers['Content-Type'] = 'application/json'
             return resp
         elif request.method == 'DELETE':
-            DatabaseController.remove_participants(username)
+            database.remove_participants(username)
             resp = make_response(json.dumps({"message": "Removed participant!"}))
             resp.headers['Content-Type'] = 'application/json'
             return resp
@@ -100,15 +101,15 @@ def participants(username):
 @app.route('/backend/setting/<string:settingName>', methods=['GET', 'PUT'])
 def setting(settingName):
     # Allow access only with login, or to dark mode variable
-    if request.cookies.get("gyc_login") == DatabaseController.getPassword() \
+    if request.cookies.get("gyc_login") == database.getPassword() \
             or (settingName == "dark-mode-default" and request.method == 'GET'):
         if request.method == 'PUT':
             if 'value' in request.json:
                 value = request.json['value']
                 if settingName == "password":
                     value = sha256(value.encode()).hexdigest()
-                DatabaseController.set_setting(settingName, value)
-        resp = make_response(json.dumps({"name": settingName, "value": DatabaseController.get_setting(settingName)}))
+                database.set_setting(settingName, value)
+        resp = make_response(json.dumps({"name": settingName, "value": database.get_setting(settingName)}))
         resp.headers['Content-Type'] = 'application/json'
         return resp
     else:
@@ -120,9 +121,9 @@ def setting(settingName):
 
 @app.route('/user/<string:user>', methods=['GET'])
 def user_page(user):
-    if DatabaseController.get_setting("allow-user-unregistered") == "false":
+    if database.get_setting("allow-user-unregistered") == "false":
         found = False
-        for dbUser in DatabaseController.get_participants():
+        for dbUser in database.get_participants():
             if dbUser[0] == user:
                 found = True
         if not found:
@@ -170,3 +171,4 @@ def acme(path):
 
 if __name__ == '__main__':
     app.run()
+    print("Closing down...")

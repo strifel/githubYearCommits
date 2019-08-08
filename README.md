@@ -15,6 +15,7 @@ You can change cache duration in settings.
 You can force reload by going to `/force` path(can be disabled)
 Admin can force reload even if disabled
 You can click on count and hover over another to see percentage.
+You can change path to sqlite database by changing `GYC_DATABASE` environmental variable 
 ## License
 On 26th Juli 2018 this is on MIT License.
 ## Special Thanks

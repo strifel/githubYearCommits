@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -44,13 +45,17 @@ class CommitConnection:
         return streak
 
 
-
 class DatabaseController:
-    users = []
 
-    @staticmethod
-    def getPassword():
-        database = sqlite3.connect("database")
+    def __init__(self) -> None:
+        super().__init__()
+        if "GYC_DATABASE" in os.environ:
+            self.database = os.environ['GYC_DATABASE']
+        else:
+            self.database = "database"
+
+    def getPassword(self):
+        database = sqlite3.connect(self.database)
         result = database.execute("SELECT value FROM settings WHERE setting='password'")
         result_fetched = result.fetchall()
         if len(result_fetched) == 1:
@@ -58,49 +63,36 @@ class DatabaseController:
             return result_fetched[0][0]
         database.close()
 
-    @staticmethod
-    def get_setting(setting):
-        database = sqlite3.connect("database")
-        result = database.execute("SELECT value FROM settings WHERE setting='" + setting + "'")
+    def get_setting(self, setting):
+        database = sqlite3.connect(self.database)
+        result = database.execute("SELECT value FROM settings WHERE setting=?", (setting,))
         result_fetched = result.fetchall()
         if len(result_fetched) == 1:
             database.close()
             return result_fetched[0][0]
         database.close()
 
-    @staticmethod
-    def set_setting(setting, value):
-        database = sqlite3.connect("database")
+    def set_setting(self, setting, value):
+        database = sqlite3.connect(self.database)
         database.execute("UPDATE settings SET value=? WHERE setting=?", (value, setting))
         database.commit()
         database.close()
 
-    @staticmethod
-    def get_participants():
-        if not DatabaseController.users:
-            database = sqlite3.connect("database")
-            result = database.execute("SELECT username FROM participant")
-            result_fetched = result.fetchall()
-            if len(result_fetched) > 0:
-                database.close()
-                DatabaseController.users = result_fetched
-                return result_fetched
-            database.close()
-        else:
-            return DatabaseController.users
+    def get_participants(self):
+        database = sqlite3.connect(self.database)
+        result = database.execute("SELECT username FROM participant")
+        result_fetched = result.fetchall()
+        database.close()
+        return result_fetched
 
-    @staticmethod
-    def add_participants(user):
-        database = sqlite3.connect("database")
+    def add_participants(self, user):
+        database = sqlite3.connect(self.database)
         database.execute("INSERT INTO participant (username) VALUES (?)", (user,))
         database.commit()
         database.close()
-        DatabaseController.users = []
 
-    @staticmethod
-    def remove_participants(user):
-        database = sqlite3.connect("database")
+    def remove_participants(self, user):
+        database = sqlite3.connect(self.database)
         database.execute("DELETE FROM participant WHERE username=?", (user,))
         database.commit()
         database.close()
-        DatabaseController.users = []

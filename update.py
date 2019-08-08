@@ -1,4 +1,5 @@
 import sqlite3
+import os
 from version import VERSION, DEV, DEV_STABLE
 print("This is the update Script!")
 print("This script will update your database after you updated the codebase")
@@ -6,7 +7,10 @@ print("Update the codebase with git pull, if you havent!")
 print("Searching for database...")
 # This file should be called by user after version update
 # Every version update (normally) needs database changes
-db = sqlite3.connect("database")
+if "GYC_DATABASE" in os.environ:
+    db = sqlite3.connect(os.environ['GYC_DATABASE'])
+else:
+    db = sqlite3.connect("database")
 print("Searching for version....")
 versionRequest = db.execute("SELECT value FROM settings WHERE setting = 'version'").fetchall()
 # Check if version tag even exists.
