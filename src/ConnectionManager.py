@@ -24,25 +24,6 @@ class CommitConnection:
             count = count + year['total']
         return count
 
-    @staticmethod
-    def getCommitStreak(username):
-        response = requests.get("https://github-contributions-api.now.sh/v1/" + username)
-        jsonResponse = json.loads(response.text)
-        streak = 0
-        streakEnd = False
-        while not streakEnd:
-            date = datetime.now() - timedelta(days=streak + 1)
-            for contribution in jsonResponse["contributions"]:
-                if contribution['date'] == datetime.now().strftime("%Y-%m-%d"):
-                    if contribution['count'] > 0:
-                        streak += 1
-                elif contribution['date'] == date.strftime("%Y-%m-%d"):
-                    if contribution['count'] > 0:
-                        streak += 1
-                    else:
-                        streakEnd = True
-                        break
-        return streak
 
 
 class DatabaseController:

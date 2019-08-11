@@ -4,8 +4,9 @@ from flask import render_template, make_response, send_from_directory, send_file
 import requests as rest
 import json
 from hashlib import sha256
-from connection.ConnectionManager import CommitConnection
-from connection.ConnectionManager import DatabaseController
+from src.ConnectionManager import CommitConnection
+from src.ConnectionManager import DatabaseController
+from src.Participant import Participant
 from datetime import datetime
 import operator
 
@@ -119,7 +120,7 @@ def setting(settingName):
         return resp
 
 
-@app.route('/user/<string:user>', methods=['GET'])
+@app.route('/participant/<string:user>', methods=['GET'])
 def user_page(user):
     if database.get_setting("allow-user-unregistered") == "false":
         found = False
@@ -133,28 +134,15 @@ def user_page(user):
         year = int(request.args['contributions_year'])
     else:
         year = int(datetime.now().strftime("%Y"))
-    repos = rest.get("https://api.github.com/users/" + user + "/repos?per_page=100")
-    repos_json = json.loads(repos.text)
-    # languages
-    languages = {}
-    for repository in repos_json:
-        language = repository['language']
-        if languages.get(language) is not None:
-            languages.update({language: languages.get(language) + 1})
-        else:
-            languages.update({language: 1})
-    sorted_languages = sorted(languages.items(), key=operator.itemgetter(1), reverse=True)
-    # mail
-    commit_url = repos_json[0]['commits_url'].replace('{/sha}', '')
-    json_commits = json.loads(rest.get(commit_url).text)
-    mail = ""
-    if json_commits[0]['author']['login'].lower() == user.lower():
-        mail = json_commits[0]['commit']['author']['email']
-    # commit streak
-    commit_streak = CommitConnection.getCommitStreak(user)
+
+    participant = Participant(user)
     # response
-    resp = make_response(render_template("user.html.twig", username=user, contributions=CommitConnection
-                                         .getCommitsInYear(year, user), year=year, languages=sorted_languages, email=mail, streak=commit_streak))
+    resp = make_response(render_template("user.html.twig",
+                                         username=user, email=participant.get_commit_mail(),
+                                         contributions=participant.get_commits_in_year(year), year=year,
+                                         languages=participant.get_languages(),
+                                         streak=participant.get_commit_streak()
+                                         ))
 
     return resp
 
