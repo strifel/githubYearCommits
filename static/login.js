@@ -17,6 +17,6 @@ function login() {
             }
         }
     }
-    request.open("GET", "/backend/setting/password");
+    request.open("GET", "/api/setting/password");
     request.send();
 }

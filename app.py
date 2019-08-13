@@ -71,8 +71,8 @@ def admin():
         return resp
 
 
-@app.route('/backend/participants/<string:username>', methods=['POST', 'DELETE'])
-@app.route('/backend/participants', methods=['GET'], defaults={"username": None})
+@app.route('/api/participants/<string:username>', methods=['POST', 'DELETE'])
+@app.route('/api/participants', methods=['GET'], defaults={"username": None})
 def participants(username):
     if request.cookies.get("gyc_login") == database.getPassword():
         if request.method == 'GET':
@@ -99,7 +99,7 @@ def participants(username):
             pass
 
 
-@app.route('/backend/setting/<string:settingName>', methods=['GET', 'PUT'])
+@app.route('/api/setting/<string:settingName>', methods=['GET', 'PUT'])
 def setting(settingName):
     # Allow access only with login, or to dark mode variable
     if request.cookies.get("gyc_login") == database.getPassword() \

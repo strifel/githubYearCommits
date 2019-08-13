@@ -2,7 +2,7 @@ import hashlib
 import sqlite3
 import os
 from version import VERSION
-pw = input("Your Backend password: ")
+pw = input("Your Admin password: ")
 hashed = hashlib.sha256(pw.encode()).hexdigest() + ""
 if "GYC_DATABASE" in os.environ:
     db = sqlite3.connect(os.environ['GYC_DATABASE'])

@@ -42,6 +42,6 @@ if (localStorage.getItem("dark") == null) {
             }
         }
     };
-    darkmodeRequest.open("GET", "/backend/setting/dark-mode-default");
+    darkmodeRequest.open("GET", "/api/setting/dark-mode-default");
     darkmodeRequest.send();
 }

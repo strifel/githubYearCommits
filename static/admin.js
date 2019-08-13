@@ -12,7 +12,7 @@ document.getElementById('setting').onchange = () => {
                 settingValue.placeholder = JSON.parse(settingValueRequest.responseText)['value'];
             }
         };
-        settingValueRequest.open('GET', '/backend/setting/' + setting);
+        settingValueRequest.open('GET', '/api/setting/' + setting);
         settingValueRequest.send();
     }
 };
@@ -30,7 +30,7 @@ function saveSetting() {
                 document.getElementById('settingValue').value = '';
             }
         };
-        settingChangeRequest.open('PUT', '/backend/setting/' + setting);
+        settingChangeRequest.open('PUT', '/api/setting/' + setting);
         settingChangeRequest.setRequestHeader('Content-Type', 'application/json');
         settingChangeRequest.send(JSON.stringify({'value': value}))
 
@@ -48,7 +48,7 @@ function addParticipant() {
             usernameField.value = '';
         }
     };
-    addRequest.open('POST', '/backend/participants/' + usernameField.value);
+    addRequest.open('POST', '/api/participants/' + usernameField.value);
     addRequest.send();
 }
 
@@ -60,7 +60,7 @@ function removeParticipant() {
             reloadParticipants();
         }
     };
-    removeRequest.open('DELETE', '/backend/participants/' + username);
+    removeRequest.open('DELETE', '/api/participants/' + username);
     removeRequest.send();
 }
 
@@ -78,7 +78,7 @@ function reloadParticipants() {
             });
         }
     };
-    getRequest.open('GET', '/backend/participants');
+    getRequest.open('GET', '/api/participants');
     getRequest.send();
 }
 
