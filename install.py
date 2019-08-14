@@ -1,8 +1,12 @@
 import hashlib
 import sqlite3
 import os
+import sys
 from version import VERSION
-pw = input("Your Admin password: ")
+if len(sys.argv) > 1:
+    pw = sys.argv[1]
+else:
+    pw = input("Your Admin password: ")
 hashed = hashlib.sha256(pw.encode()).hexdigest() + ""
 if "GYC_DATABASE" in os.environ:
     db = sqlite3.connect(os.environ['GYC_DATABASE'])
