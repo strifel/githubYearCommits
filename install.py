@@ -2,8 +2,13 @@ import hashlib
 import sqlite3
 import os
 import sys
-from version import VERSION
-if len(sys.argv) > 1:
+from version import VERSION, DEV_STABLE, DEV
+if DEV and "--continue-dev" not in sys.argv:
+    continueInput = input("You are using a Dev version. This is not recommended. It is recommend to rollback to the "
+                          "last stable commit with 'git checkout " + DEV_STABLE + "'. To continue type 'continue'")
+    if continueInput != "continue":
+        exit(0)
+if len(sys.argv) > 1 and not sys.argv[1][0] == "-":
     pw = sys.argv[1]
 else:
     pw = input("Your Admin password: ")
