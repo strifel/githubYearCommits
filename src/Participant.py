@@ -1,7 +1,7 @@
 import requests as http
 import json
 from datetime import datetime, timedelta
-import operator
+from src.Util import sortWithCount
 
 
 class Participant:
@@ -18,11 +18,13 @@ class Participant:
         languages = {}
         for repository in self.repos:
             language = repository['language']
-            if languages.get(language) is not None:
-                languages.update({language: languages.get(language) + 1})
+            if language is None:
+                language = "None"
+            if language in languages and "count" in languages[language]:
+                languages[language]["count"] += 1
             else:
-                languages.update({language: 1})
-        return sorted(languages.items(), key=operator.itemgetter(1), reverse=True)
+                languages.update({language: {"language": language, "count": 1}})
+        return sortWithCount(languages)
 
     def get_commit_mail(self):
         commit_url = self.repos[0]['commits_url'].replace('{/sha}', '')

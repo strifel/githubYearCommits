@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Participant</title>
+    <meta charset="UTF-8">
+    
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
+    
+</head>
+<body>
+<div class="alert alert-danger" role="alert" id="error" hidden>
+    <div class="alert-body" id="error_body">
+
+    </div>
+</div>
+<table>
+    <tr>
+        <td><img id="profile_picture" alt="Profile picture" width="150" height="150"> </td>
+        <td>
+            <a id="profile_link"></a>
+            <h4 id="contributions_in_year"></h4>
+            <h4 hidden id="commit_email_header">Email:
+            <a id="commit_email"></a>
+            </h4>
+            <h4 id="contribution_streak"></h4>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <h3>Languages:</h3><br>
+            <ol id="languages"></ol>
+        </td>
+    </tr>
+</table>
+<script src="/static/participant.js"></script>
+</body>
+</html>
+<style>
+    td {
+        line-height: 10px;
+        vertical-align: top;
+    }
+</style>

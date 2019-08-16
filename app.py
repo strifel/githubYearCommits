@@ -59,6 +59,11 @@ def main_page(reload):
     return resp
 
 
+@app.route('/participant/<string:participant>', methods=['GET'])
+def participant_page(participant):
+    return make_response(send_file("web/participant.html"))
+
+
 @app.route('/login', methods=['GET'])
 @app.route('/admin', methods=['GET'])
 def admin():
@@ -99,6 +104,48 @@ def participants(username):
             pass
 
 
+@app.route('/api/participants/<string:username>', methods=['GET'])
+def participant_api(username):
+    # Checking if participant exists in database if unregistered not allowed
+    if database.get_setting("allow-user-unregistered") == "false":
+        found = False
+        for dbUser in database.get_participants():
+            if dbUser[0] == username:
+                found = True
+        if not found:
+            return make_response(json.dumps({"error": "User not found"}), 404, {"Content-Type": "application/json"})
+    # Finding year in query string
+    if "contributions_year" in request.args:
+        year = int(request.args['contributions_year'])
+    else:
+        year = int(datetime.now().strftime("%Y"))
+    # Create Participant Object and response
+    participant = Participant(username)
+    resp = make_response(
+        json.dumps(
+            {
+                "general": {
+                    "username": participant.username,
+                    "commit_mail": participant.get_commit_mail(),
+                },
+                "languages": participant.get_languages(),
+                "stats": {
+                    "contributions": {
+                        "year": year,
+                        "contributions": participant.get_commits_in_year(year)
+                    },
+                    "contribution_streak": participant.get_commit_streak()
+                }
+            }
+        ),
+        {"Content-Type": "application/json"}
+    )
+    resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
+    resp.headers['Pragma'] = "no-cache"
+    resp.headers['Expires'] = "0"
+    return resp
+
+
 @app.route('/api/setting/<string:settingName>', methods=['GET', 'PUT'])
 def setting(settingName):
     # Allow access only with login, or to dark mode variable
@@ -118,33 +165,6 @@ def setting(settingName):
         resp.headers['Content-Type'] = 'application/json'
         resp.status_code = 403
         return resp
-
-
-@app.route('/participant/<string:user>', methods=['GET'])
-def user_page(user):
-    if database.get_setting("allow-user-unregistered") == "false":
-        found = False
-        for dbUser in database.get_participants():
-            if dbUser[0] == user:
-                found = True
-        if not found:
-            return make_response("<h1>User not found</h1>", 404)
-    # Finding year in query string
-    if "contributions_year" in request.args:
-        year = int(request.args['contributions_year'])
-    else:
-        year = int(datetime.now().strftime("%Y"))
-
-    participant = Participant(user)
-    # response
-    resp = make_response(render_template("user.html.twig",
-                                         username=user, email=participant.get_commit_mail(),
-                                         contributions=participant.get_commits_in_year(year), year=year,
-                                         languages=participant.get_languages(),
-                                         streak=participant.get_commit_streak()
-                                         ))
-
-    return resp
 
 # Serve static directory
 @app.route('/static/<string:path>', methods=['GET'])

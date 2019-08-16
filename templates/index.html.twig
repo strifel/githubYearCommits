@@ -13,7 +13,7 @@
 <table>
     {% for user in users %}
         <tr class="contributionUser">
-            <td class="usernameTD"><a class="username" href="/user/{{ user.name }}">{{ user.name }}</a></td>
+            <td class="usernameTD"><a class="username" href="/participant/{{ user.name }}">{{ user.name }}</a></td>
             <td class="contributionsTD text"><a class="contributions">{{ user.contributions }}</a></td>
             <td class="percentageTD text"><a class="percentage"></a></td>
         </tr>
