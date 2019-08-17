@@ -27,10 +27,11 @@ class Participant:
         return sortWithCount(languages)
 
     def get_commit_mail(self):
-        commit_url = self.repos[0]['commits_url'].replace('{/sha}', '')
-        json_commits = json.loads(http.get(commit_url).text)
-        if json_commits[0]['author']['login'].lower() == self.username.lower():
-            return json_commits[0]['commit']['author']['email']
+        if len(self.repos) > 0:
+            commit_url = self.repos[0]['commits_url'].replace('{/sha}', '')
+            json_commits = json.loads(http.get(commit_url).text)
+            if json_commits[0]['author']['login'].lower() == self.username.lower():
+                return json_commits[0]['commit']['author']['email']
 
     def get_commit_streak(self):
         streak = 0
