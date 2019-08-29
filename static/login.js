@@ -8,7 +8,11 @@ function login() {
     request.onreadystatechange = () => {
         if (request.readyState === 4) {
             if (request.status === 200) {
-                location.href = '/admin';
+                if (location.pathname === '/admin') {
+                    location.reload();
+                } else {
+                    location.href = '/admin';
+                }
             } else if (request.status === 403) {
                 document.getElementById("error").innerText = "Password wrong!";
                 setTimeout(() => {
@@ -16,7 +20,7 @@ function login() {
                 }, 700);
             }
         }
-    }
+    };
     request.open("GET", "/api/setting/password");
     request.send();
 }
