@@ -37,7 +37,8 @@ This project is still being worked on:
 - Apache WGSI normally starts everytime a new instance. This will disable caching completely. (Disable that feature of WGSI to use caching)
 ## License
 On 26th Juli 2018 this is on MIT License.
-## Special Thanks
-Go out to robmroi for the idea, sallar for giving an api for contributions.
-And to all people who build a library (I use).
-And to the Stack Overflow Community (of course).
+## Special Thanks go out to
+- robmroi for the idea, the design and the darkmode
+- sallar for giving an api for contributions
+- All the people who build a library (I use).
+- Stack Overflow Community (of course).
