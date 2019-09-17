@@ -9,6 +9,7 @@ function loadParticipant(username, query) {
                 let participant = JSON.parse(participantRequest.responseText);
                 document.title = 'Participant - ' + participant['general']['username'];
                 document.getElementById('profile_picture').src = 'https://github.com/' + participant['general']['username'] + '.png?size=150';
+                document.getElementById('profile_picture').hidden = false;
                 {
                     let link = document.getElementById('profile_link');
                     // Not using innerHTML here to not allow user to insert html tags by changing his username...
@@ -36,13 +37,17 @@ function loadParticipant(username, query) {
                     if (language['language'] !== 'None') {
                         let languageElement = document.createElement('li');
                         languageElement.innerText = language['language'];
+                        languageElement.classList.add('language');
                         if (languages.childElementCount <= 0) {
                             languages.appendChild(languageElement);
                         } else {
                             languages.insertBefore(languageElement, languages.firstChild);
                         }
                     }
-                })
+                });
+                document.getElementById('languageText').hidden = false;
+                // Hide the spinner
+                document.getElementById('spinner').hidden = true;
             } else {
                 if (participantRequest.responseText.startsWith("{")) {
                     // Should be json...
