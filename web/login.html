@@ -6,19 +6,22 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 </head>
 <body>
 <div class="login">
-    <h1 id="1">Configuration</h1>
+    <h1 id="1" data-affect-dark-mode="color">Configuration</h1>
 
-    <h3>Please enter the admin password</h3>
+    <h3 data-affect-dark-mode="color">Please enter the admin password</h3>
 
-    <input id="password" type="password">
+    <input id="password" type="password" data-affect-dark-mode="border-color">
     <button class="btn btn-primary" onclick="login()">Login</button>
     <p id="error" style="color: red;"></p>
 </div>
 <script src="https://unpkg.com/node-forge@0.7.0/dist/forge.min.js"></script>
 <script src="static/login.js"></script>
+<script src="/static/darkmode.js"></script>
 </body>
 </html>
 <style>
