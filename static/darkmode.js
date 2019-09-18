@@ -1,31 +1,40 @@
+// This script depends on JQuery!
+
 function changeDarkMode(userSet) {
-    let button = document.getElementById("darkMode");
-    if (button.innerText === "Dark Mode") { //Change to dark mode
-        if (userSet) {
-            localStorage.setItem("dark", "true");
+    let button = document.getElementById("darkModeButton");
+    if (button != null) {
+        if (button.innerText === "Dark Mode") { //Change to dark mode
+            button.innerText = "Light Mode";
+            button.style.backgroundColor = "#f5f5f5";
+            button.style.color = "#1D1F21";
+        } else { //change to Light Mode
+            button.innerText = "Dark Mode";
+            button.style.backgroundColor = "#1D1F21";
+            button.style.color = "#f5f5f5";
         }
-        button.innerText = "Light Mode";
-        button.style.backgroundColor = "#f5f5f5";
-        button.style.color = "#1D1F21";
-        document.body.style.backgroundColor = "#1D1F21";
-        const elements = document.getElementsByClassName("text");
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.color = "#f5f5f5";
-        }
-    } else { //change to Light Mode
+    }
+    let newColor;
+    if (document.darkMode === true) {
+        document.darkMode = false;
         if (userSet) {
             localStorage.setItem("dark", "false");
         }
-        button.innerText = "Dark Mode";
-        button.style.backgroundColor = "#1D1F21";
-        button.style.color = "#f5f5f5";
         document.body.style.backgroundColor = "#f5f5f5";
-        const elements = document.getElementsByClassName("text");
-        for (let i = 0; i < elements.length; i++) {
-            elements[i].style.color = "#1D1F21";
+        newColor = '#1D1F21';
+    } else {
+        document.darkMode = true;
+        if (userSet) {
+            localStorage.setItem("dark", "true");
         }
+        document.body.style.backgroundColor = "#1D1F21";
+        newColor = '#f5f5f5';
     }
+    $("[data-affect-dark-mode]").each(function () {
+        this.style[this.getAttribute("data-affect-dark-mode")] = newColor;
+    });
+
 }
+
 
 if (localStorage.getItem("dark") === "true") {
     changeDarkMode(false)
@@ -35,7 +44,7 @@ if (localStorage.getItem("dark") === "true") {
 if (localStorage.getItem("dark") == null) {
     let darkmodeRequest = new XMLHttpRequest();
     darkmodeRequest.onreadystatechange = () => {
-        if  (darkmodeRequest.readyState === 4 && darkmodeRequest.status === 200) {
+        if (darkmodeRequest.readyState === 4 && darkmodeRequest.status === 200) {
             // Checking localstorage again, if response took longer as user.
             if (JSON.parse(darkmodeRequest.responseText)['value'] === "true" && localStorage.getItem("dark") == null) {
                 changeDarkMode(false);

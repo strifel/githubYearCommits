@@ -6,21 +6,22 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 
-<h1 class="text">Contributions {{ timespan }}</h1>
+<h1 data-affect-dark-mode="color">Contributions {{ timespan }}</h1>
 <table>
     {% for user in users %}
         <tr class="contributionUser">
             <td class="usernameTD"><a class="username" href="/participant/{{ user.name }}">{{ user.name }}</a></td>
-            <td class="contributionsTD text"><a class="contributions">{{ user.contributions }}</a></td>
-            <td class="percentageTD text"><a class="percentage"></a></td>
+            <td class="contributionsTD" data-affect-dark-mode="color"><a class="contributions">{{ user.contributions }}</a></td>
+            <td class="percentageTD" data-affect-dark-mode="color"><a class="percentage"></a></td>
         </tr>
     {% endfor %}
 </table>
 
-<button onclick="changeDarkMode(true)" id="darkMode">Dark Mode</button>
+<button onclick="changeDarkMode(true)" id="darkModeButton">Dark Mode</button>
 
 <script src="/static/percentage.js"></script>
 <script src="/static/darkmode.js"></script>
