@@ -38,6 +38,7 @@ function loadParticipant(username, query) {
                         let languageElement = document.createElement('li');
                         languageElement.innerText = language['language'];
                         languageElement.classList.add('language');
+                        languageElement.setAttribute('data-affect-dark-mode', 'color');
                         if (languages.childElementCount <= 0) {
                             languages.appendChild(languageElement);
                         } else {
@@ -46,6 +47,9 @@ function loadParticipant(username, query) {
                     }
                 });
                 document.getElementById('languageText').hidden = false;
+                // Reload darkmode (Yeah bad implementation. But who cares? The whole project is coded like this!)
+                changeDarkMode(false);
+                changeDarkMode(false);
                 // Hide the spinner
                 document.getElementById('spinner').hidden = true;
             } else {
