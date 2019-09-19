@@ -22,7 +22,7 @@ function loadParticipant(username, query) {
                 }
                 document.getElementById('contributions_in_year').innerText = 'Contributions (' + participant['stats']['contributions']['year'] + '): ' + participant['stats']['contributions']['contributions'];
                 // Check if email exists because it is optional/controllable by setting
-                if (participant['general'].hasOwnProperty('commit_mail')) {
+                if (participant['general']['commit_mail'] !== null) {
                     let mail = document.getElementById('commit_email');
                     mail.innerText = participant['general']['commit_mail'];
                     mail.href = 'mailto:' + participant['general']['commit_mail'];

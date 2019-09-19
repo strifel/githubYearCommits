@@ -42,6 +42,7 @@ if version < 0.9:
 if version < 1.1:
     db.execute("ALTER TABLE user RENAME TO participant")
     db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("dark-mode-default", "false"))
+    db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("show-commit-mail", "false"))
     print("Updated to 1.1: Enjoy new changes!")
 
 
