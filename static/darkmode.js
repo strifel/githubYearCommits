@@ -30,7 +30,14 @@ function changeDarkMode(userSet) {
         newColor = '#f5f5f5';
     }
     $("[data-affect-dark-mode]").each(function () {
-        this.style[this.getAttribute("data-affect-dark-mode")] = newColor;
+        let attribute = this.getAttribute("data-affect-dark-mode");
+        if (attribute.includes("&")) {
+            attribute.split("&").forEach((attr) => {
+                this.style[attr] = newColor;
+            });
+        } else {
+            this.style[attribute] = newColor;
+        }
     });
 
 }
