@@ -20,7 +20,6 @@ function changeDarkMode(userSet) {
         if (userSet) {
             localStorage.setItem("dark", "false");
         }
-        document.body.style.backgroundColor = "#f5f5f5";
         themeColor = '#1D1F21';
         oppositeColor = '#f5f5f5';
     } else {
@@ -28,7 +27,6 @@ function changeDarkMode(userSet) {
         if (userSet) {
             localStorage.setItem("dark", "true");
         }
-        document.body.style.backgroundColor = "#1D1F21";
         themeColor = '#f5f5f5';
         oppositeColor = '#1D1F21';
     }
