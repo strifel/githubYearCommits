@@ -7,25 +7,31 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <style>
         .col-md-5 {
             margin: 20px auto;
             width: 98%;
         }
+
+        .card.dark {
+            background-color: #313335;
+        }
     </style>
 </head>
 <body>
-<h1 style="text-align: center">Configuration</h1>
+<h1 style="text-align: center" data-affect-dark-mode="color">Configuration</h1>
 <div class="row">
     <div class="col-md-5">
-        <div class="card">
-            <div class="card-header">
+        <div class="card" data-affect-dark-mode="?dark">
+            <div class="card-header" data-affect-dark-mode="color">
                 <h3>Add participant</h3>
             </div>
             <div class="card-body">
                 <div class="form">
                     <input class="form-control" id="participantUsername"
-                           type="text" placeholder="Github username of participant">
+                           type="text" placeholder="Github username of participant" data-affect-dark-mode="!background-color&color">
                     <br/>
                     <button class="btn btn-primary" onclick="addParticipant()">Add participant</button>
                 </div>
@@ -33,24 +39,24 @@
         </div>
     </div>
     <div class="col-md-5">
-        <div class="card">
-            <div class="card-header">
+        <div class="card" data-affect-dark-mode="?dark">
+            <div class="card-header" data-affect-dark-mode="color">
                 <h3>Remove participant</h3>
             </div>
             <div class="card-body">
-                <select id="participants" class="form-control"></select>
+                <select id="participants" class="form-control" data-affect-dark-mode="!background-color&color"></select>
                 <br/>
                 <button onclick="removeParticipant()" class="btn btn-primary">Remove participant</button>
             </div>
         </div>
     </div>
     <div class="col-md-5">
-        <div class="card">
-            <div class="card-header">
+        <div class="card" data-affect-dark-mode="?dark">
+            <div class="card-header" data-affect-dark-mode="color">
                 <h3>Settings</h3>
             </div>
             <div class="card-body">
-                <select id="setting" class="form-control">
+                <select id="setting" class="form-control" data-affect-dark-mode="!background-color&color">
                     <option hidden value="placeholder">Select a setting</option>
                     <option value="cache">Cache Time</option>
                     <option value="password">Admin password</option>
@@ -61,15 +67,15 @@
                     <option value="show-commit-mail">Show the commit Mail address. (Please think about privacy. Yes it is public, but...)</option>
                 </select>
                 <input style="margin-top: 20px" id="settingValue" class="form-control"
-                       type="text" hidden>
+                       type="text" data-affect-dark-mode="!background-color&color" hidden>
                 <br />
                 <button class="btn btn-primary" onclick="saveSetting()">Save</button>
             </div>
         </div>
     </div>
     <div class="col-md-5">
-        <div class="card">
-            <div class="card-header">
+        <div class="card" data-affect-dark-mode="?dark">
+            <div class="card-header" data-affect-dark-mode="color">
                 <h3>Logout</h3>
             </div>
             <div class="card-body">
@@ -82,5 +88,6 @@
     </div>
 </div>
 <script src="/static/admin.js"></script>
+<script src="/static/darkmode.js"></script>
 </body>
 </html>
