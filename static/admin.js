@@ -3,6 +3,8 @@
 // Settings
 document.getElementById('setting').onchange = () => {
     let setting = document.getElementById('setting').value;
+    document.getElementById('settingValue').classList.remove("settingValueError");
+    document.getElementById('settingValue').value = "";
     if (setting !== 'placeholder') {
         let settingValueRequest = new XMLHttpRequest();
         settingValueRequest.onreadystatechange = () => {
@@ -28,6 +30,9 @@ function saveSetting() {
             if (settingChangeRequest.readyState === 4 && settingChangeRequest.status === 200) {
                 document.getElementById('settingValue').placeholder = JSON.parse(settingChangeRequest.responseText)['value'];
                 document.getElementById('settingValue').value = '';
+                document.getElementById('settingValue').classList.remove("settingValueError");
+            } else if (settingChangeRequest.readyState === 4 && settingChangeRequest.status === 400) {
+                document.getElementById('settingValue').classList.add("settingValueError");
             }
         };
         settingChangeRequest.open('PUT', '/api/setting/' + setting);

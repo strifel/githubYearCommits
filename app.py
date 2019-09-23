@@ -1,7 +1,8 @@
 from sqlite3 import IntegrityError
 
 from flask import render_template, make_response, send_from_directory, send_file, request, Flask
-import requests as rest
+from src.Settings import validSettings as validSettingValues
+import re
 import json
 from hashlib import sha256
 from src.ConnectionManager import CommitConnection
@@ -154,6 +155,11 @@ def setting(settingName):
         if request.method == 'PUT':
             if 'value' in request.json:
                 value = request.json['value']
+                if not re.search(validSettingValues[settingName], value):
+                    resp = make_response(json.dumps({"error": "Value not valid"}))
+                    resp.headers['Content-Type'] = 'application/json'
+                    resp.status_code = 400
+                    return resp
                 if settingName == "password":
                     value = sha256(value.encode()).hexdigest()
                 database.set_setting(settingName, value)
