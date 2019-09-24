@@ -42,6 +42,7 @@ function loadParticipant(username, query) {
                         if (languages.childElementCount <= 0) {
                             languages.appendChild(languageElement);
                         } else {
+                            languages.insertBefore(document.createElement('br'), languages.firstChild);
                             languages.insertBefore(languageElement, languages.firstChild);
                         }
                     }
