@@ -18,15 +18,19 @@ if "GYC_DATABASE" in os.environ:
 else:
     db = sqlite3.connect("database")
 db.execute("CREATE TABLE IF NOT EXISTS settings (setting string PRIMARY KEY, value string)")
-db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("password", hashed))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("cache", "1220"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-force", "true"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-user-unregistered", "true"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("duration", "year"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("dark-mode-default", "false"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("show-commit-mail", "false"))
+db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)",
+           ("jwtToken", input("Please enter some LONG random input. Its important. If it is too short your login will not be secure")))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("version", str(VERSION)))
 db.execute("CREATE TABLE IF NOT EXISTS participant (username string PRIMARY KEY NOT NULL)")
 db.execute("INSERT INTO participant (username) VALUES ('strifel')")
+db.execute("CREATE TABLE IF NOT EXISTS user (username string PRIMARY KEY NOT NULL, password string NOT NULL, permission string, twofo string)")
+db.execute("INSERT INTO user (username, password, permission) VALUES ('admin', ?, '*')", (hashed,))
+
 db.commit()
 db.close()

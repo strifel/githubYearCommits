@@ -77,3 +77,15 @@ class DatabaseController:
         database.execute("DELETE FROM participant WHERE username=?", (user,))
         database.commit()
         database.close()
+
+    def return_user_with_name_and_password(self, user, passwordHash):
+        database = sqlite3.connect(self.database)
+        users = database.execute("SELECT * FROM user WHERE username=?", (user,))
+        users = users.fetchall()
+        if len(users) > 0:
+            if users[0][1] == passwordHash:
+                return users[0]
+            else:
+                return False
+        else:
+            return False

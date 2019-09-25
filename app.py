@@ -1,9 +1,11 @@
 from sqlite3 import IntegrityError
-
-from flask import render_template, make_response, send_from_directory, send_file, request, Flask
+from src.Helper import returnError
+from flask import render_template, make_response, send_from_directory, send_file, request, Flask, g
 from src.Settings import validSettings as validSettingValues
 import re
 import json
+import jwt
+import time
 from hashlib import sha256
 from src.ConnectionManager import CommitConnection
 from src.ConnectionManager import DatabaseController
@@ -16,6 +18,24 @@ app = Flask(__name__, static_url_path='')
 users = list()
 timeUpdated = 0
 database = DatabaseController()
+
+
+def verify_jwt(req, permissionsRequired):
+    try:
+        if 'Authorization' not in req.headers:
+            return False
+        response = jwt.decode(req.headers["Authorization"].replace("Bearer ", ""), database.get_setting('jwtToken'),
+                              algorithm='HS256', verifyExp=False)
+        if response["permission"] == "*":
+            return True
+        if permissionsRequired.count(":") == 1:
+            if "(" + permissionsRequired + ")" in response["permission"]:
+                return True
+            elif "(" + permissionsRequired.split(":")[0] + ":*)" in response["permission"]:
+                return True
+        return False
+    except Exception:
+        return False
 
 
 @app.route('/', methods=['GET'], defaults={"reload": False})
@@ -66,43 +86,13 @@ def participant_page(participant):
 
 
 @app.route('/login', methods=['GET'])
+def login_page():
+    return make_response(send_file("web/login.html"))
+
+
 @app.route('/admin', methods=['GET'])
 def admin():
-    if request.cookies.get("gyc_login") == database.getPassword():
-        resp = make_response(send_file("web/admin.html"))
-        return resp
-    else:
-        resp = make_response(send_file("web/login.html"))
-        resp.delete_cookie("gyc_login")
-        return resp
-
-
-@app.route('/api/participants/<string:username>', methods=['POST', 'DELETE'])
-@app.route('/api/participants', methods=['GET'], defaults={"username": None})
-def participants(username):
-    if request.cookies.get("gyc_login") == database.getPassword():
-        if request.method == 'GET':
-            entries = []
-            for row in database.get_participants():
-                entries.append(row[0])
-            resp = make_response(json.dumps(entries))
-            resp.headers['Content-Type'] = 'application/json'
-            return resp
-        elif request.method == 'POST':
-            try:
-                database.add_participants(username)
-            except IntegrityError:
-                resp = make_response(json.dumps({"error": "Participant already exists"}), 400)
-            else:
-                resp = make_response(json.dumps({"message": "Added participant!"}), 201)
-            resp.headers['Content-Type'] = 'application/json'
-            return resp
-        elif request.method == 'DELETE':
-            database.remove_participants(username)
-            resp = make_response(json.dumps({"message": "Removed participant!"}))
-            resp.headers['Content-Type'] = 'application/json'
-            return resp
-            pass
+    return make_response(send_file("web/admin.html"))
 
 
 @app.route('/api/participants/<string:username>', methods=['GET'])
@@ -127,7 +117,8 @@ def participant_api(username):
             {
                 "general": {
                     "username": participant.username,
-                    "commit_mail": None if database.get_setting("show-commit-mail") == "false" else participant.get_commit_mail(),
+                    "commit_mail": None if database.get_setting(
+                        "show-commit-mail") == "false" else participant.get_commit_mail(),
                 },
                 "languages": participant.get_languages(),
                 "stats": {
@@ -147,11 +138,39 @@ def participant_api(username):
     return resp
 
 
+@app.route('/api/participants/<string:username>', methods=['POST', 'DELETE'])
+@app.route('/api/participants', methods=['GET'], defaults={"username": None})
+def participants(username):
+    if verify_jwt(request, "participantList:" + request.method):
+        if request.method == 'GET':
+            entries = []
+            for row in database.get_participants():
+                entries.append(row[0])
+            resp = make_response(json.dumps(entries))
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+        elif request.method == 'POST':
+            try:
+                database.add_participants(username)
+            except IntegrityError:
+                resp = make_response(json.dumps({"error": "Participant already exists"}), 400)
+            else:
+                resp = make_response(json.dumps({"message": "Added participant!"}), 201)
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+        elif request.method == 'DELETE':
+            database.remove_participants(username)
+            resp = make_response(json.dumps({"message": "Removed participant!"}))
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+            pass
+
+
 @app.route('/api/setting/<string:settingName>', methods=['GET', 'PUT'])
 def setting(settingName):
-    # Allow access only with login, or to dark mode variable
-    if request.cookies.get("gyc_login") == database.getPassword() \
-            or (settingName == "dark-mode-default" and request.method == 'GET'):
+    # Allow access only with login, or to dark mode variable Prevent access to jwt Variable
+    if (verify_jwt(request, "setting:" + request.method) \
+            or (settingName == "dark-mode-default" and request.method == 'GET')) and settingName != "jwtToken":
         if request.method == 'PUT':
             if 'value' in request.json:
                 value = request.json['value']
@@ -160,8 +179,6 @@ def setting(settingName):
                     resp.headers['Content-Type'] = 'application/json'
                     resp.status_code = 400
                     return resp
-                if settingName == "password":
-                    value = sha256(value.encode()).hexdigest()
                 database.set_setting(settingName, value)
         resp = make_response(json.dumps({"name": settingName, "value": database.get_setting(settingName)}))
         resp.headers['Content-Type'] = 'application/json'
@@ -172,10 +189,28 @@ def setting(settingName):
         resp.status_code = 403
         return resp
 
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    if request.json is None or 'username' not in request.json or 'password' not in request.json:
+        return returnError(403, "Need username and password")
+    user = database.return_user_with_name_and_password(request.json['username'],
+                                                       sha256(request.json['password'].encode()).hexdigest())
+    if not user:
+        return returnError(403, "User not found")
+    token = jwt.encode({"username": user[0], "permission": user[2], "issued": time.time()},
+                       database.get_setting('jwtToken'), algorithm='HS256')
+    resp = make_response(json.dumps({"token": token.decode()}))
+    resp.headers['Content-Type'] = 'application/json'
+    resp.status_code = 200
+    return resp
+
+
 # Serve static directory
 @app.route('/static/<string:path>', methods=['GET'])
 def static_files(path):
     return send_from_directory('static/', path)
+
 
 # Allow acme to pass for e.g. lets Encrypt certificate creation
 @app.route('/.well-known/acme-challenge/<string:path>', methods=['GET'])

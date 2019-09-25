@@ -1,5 +1,6 @@
 // Script provides AJAX Connection for Admin Interface
-
+// Throw not logged in user to login page. This does not validate the token!
+if (localStorage.getItem("token") == null) location.href = "/login";
 // Settings
 document.getElementById('setting').onchange = () => {
     let setting = document.getElementById('setting').value;
@@ -15,6 +16,7 @@ document.getElementById('setting').onchange = () => {
             }
         };
         settingValueRequest.open('GET', '/api/setting/' + setting);
+        settingValueRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
         settingValueRequest.send();
     }
 };
@@ -36,6 +38,7 @@ function saveSetting() {
             }
         };
         settingChangeRequest.open('PUT', '/api/setting/' + setting);
+        settingChangeRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
         settingChangeRequest.setRequestHeader('Content-Type', 'application/json');
         settingChangeRequest.send(JSON.stringify({'value': value}))
 
@@ -54,6 +57,7 @@ function addParticipant() {
         }
     };
     addRequest.open('POST', '/api/participants/' + usernameField.value);
+    addRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
     addRequest.send();
 }
 
@@ -66,6 +70,7 @@ function removeParticipant() {
         }
     };
     removeRequest.open('DELETE', '/api/participants/' + username);
+    removeRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
     removeRequest.send();
 }
 
@@ -84,6 +89,7 @@ function reloadParticipants() {
         }
     };
     getRequest.open('GET', '/api/participants');
+    getRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
     getRequest.send();
 }
 

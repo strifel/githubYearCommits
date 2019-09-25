@@ -43,7 +43,14 @@ if version < 1.1:
     db.execute("ALTER TABLE user RENAME TO participant")
     db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("dark-mode-default", "false"))
     db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("show-commit-mail", "false"))
-    print("Updated to 1.1: Enjoy new changes!")
+    db.execute("CREATE TABLE IF NOT EXISTS user (username string PRIMARY KEY NOT NULL, password string NOT NULL, permission string, twofo string)")
+    pw = db.execute("SELECT value FROM settings WHERE setting='password'")
+    pw = pw.fetchall()[0][0]
+    db.execute("INSERT INTO user (username, password, permission) VALUES ('admin', ?, '*')", (str(pw),))
+    db.execute("DELETE FROM settings WHERE setting='password'")
+    db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("jwtToken", input("Please enter some LONG random input. Its important. If it is too short your login will not be secure")))
+    print("Your new login username is admin. Passwort stays the same")
+    print("Updated to 1.1: Enjoy new (really big) changes!")
 
 
 db.execute("UPDATE settings SET value = ? WHERE setting = 'version'", (str(VERSION), ))

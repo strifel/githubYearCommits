@@ -63,7 +63,6 @@
                 <select id="setting" class="form-control" data-affect-dark-mode="!background-color&color">
                     <option hidden value="placeholder">Select a setting</option>
                     <option value="cache">Cache Time</option>
-                    <option value="password">Admin password</option>
                     <option value="allow-force">Allow force reload</option>
                     <option value="duration">Duration of challenge</option>
                     <option value="allow-user-unregistered">Allow viewing profile of non participants</option>
@@ -84,7 +83,7 @@
             </div>
             <div class="card-body">
                 <button class="btn btn-primary"
-                        onclick='document.cookie = "gyc_login=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";location.reload();'>
+                        onclick='localStorage.setItem("token", null);location.href="/login";'>
                     Logout
                 </button>
             </div>
