@@ -94,3 +94,51 @@ function reloadParticipants() {
 }
 
 reloadParticipants();
+
+// Users
+
+function reloadUsers() {
+    let chooser = document.getElementById('users');
+    chooser.innerHTML = '<option value="placeholder">Please choose a user to edit</option>';
+    let getUserRequest = new XMLHttpRequest();
+    getUserRequest.onreadystatechange = () => {
+        if (getUserRequest.readyState === 4 && getUserRequest.status === 200) {
+            JSON.parse(getUserRequest.responseText).forEach((name) => {
+               let participant = document.createElement('option');
+               participant.value = name;
+               participant.innerText = name;
+               chooser.add(participant);
+            });
+        }
+    };
+    getUserRequest.open('GET', '/api/users');
+    getUserRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+    getUserRequest.send();
+}
+
+
+document.getElementById('users').onchange = () => {
+    let option = document.getElementById('users').value;
+    if (option === "placeholder") {
+        document.getElementById('userPassword').hidden = true;
+        return;
+    }
+    document.getElementById('userPassword').hidden = false;
+};
+
+
+document.getElementById('userPassword').onchange = () => {
+    let setPasswordRequest = new XMLHttpRequest();
+    setPasswordRequest.onreadystatechange = () => {
+        if (setPasswordRequest.readyState === 4) {
+            document.getElementById('userPassword').value = '';
+        }
+    };
+    setPasswordRequest.open('PUT', '/api/users/' + document.getElementById('users').value);
+    setPasswordRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+    setPasswordRequest.setRequestHeader('Content-Type', 'application/json');
+    setPasswordRequest.send(JSON.stringify({"password": document.getElementById('userPassword').value}));
+};
+
+reloadUsers();
+document.getElementById('users').onchange();

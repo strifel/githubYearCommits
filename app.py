@@ -190,6 +190,32 @@ def setting(settingName):
         return resp
 
 
+@app.route('/api/users/<string:username>', methods=['POST', 'PUT', 'GET'])
+@app.route('/api/users', methods=['GET'], defaults={"username": None})
+def getUser(username):
+    if not verify_jwt(request, "userAdmin"):
+        return returnError(403, "You are not allowed to use this endpoint")
+    if request.method == 'GET':
+        if username is None:
+            resp = make_response(json.dumps(database.get_users_names()))
+            resp.headers['Content-Type'] = 'application/json'
+            return resp
+        else:
+            pass
+    elif request.method == 'POST':
+        pass
+    elif request.method == 'PUT':
+        if request.json is None:
+            return returnError(400, "Json Body not found!")
+        if 'password' in request.json:
+            database.set_user_attribute(username, "password", sha256(request.json['password'].encode()).hexdigest())
+        resp = make_response(json.dumps({"message": "Success!"}))
+        resp.headers['Content-Type'] = 'application/json'
+        return resp
+    else:
+        return returnError(404, "Not found!")
+
+
 @app.route('/api/login', methods=['POST'])
 def login():
     if request.json is None or 'username' not in request.json or 'password' not in request.json:

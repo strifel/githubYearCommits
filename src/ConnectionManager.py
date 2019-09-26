@@ -78,6 +78,26 @@ class DatabaseController:
         database.commit()
         database.close()
 
+    def set_user_attribute(self, username, attribute, value):
+        database = sqlite3.connect(self.database)
+        database.execute("UPDATE user SET " + attribute + "=? WHERE username=?", (value, username))
+        database.commit()
+        database.close()
+
+    def get_users_names(self):
+        database = sqlite3.connect(self.database)
+        users = database.execute("SELECT username FROM user")
+        users = users.fetchall()
+        if len(users) > 0:
+            userList = []
+            for user in users:
+                userList.append(user[0])
+            database.close()
+            return userList
+        else:
+            database.close()
+            return []
+
     def return_user_with_name_and_password(self, user, passwordHash):
         database = sqlite3.connect(self.database)
         users = database.execute("SELECT * FROM user WHERE username=?", (user,))
