@@ -25,7 +25,7 @@ def verify_jwt(req, permissionsRequired):
         if 'Authorization' not in req.headers:
             return False
         response = jwt.decode(req.headers["Authorization"].replace("Bearer ", ""), database.get_setting('jwtToken'),
-                              algorithm='HS256', verifyExp=False)
+                              algorithm='HS256')
         if response["permission"] == "*":
             return True
         if permissionsRequired.count(":") == 1:
@@ -227,7 +227,7 @@ def login():
                                                        sha256(request.json['password'].encode()).hexdigest())
     if not user:
         return returnError(403, "User not found")
-    token = jwt.encode({"username": user[0], "permission": user[2], "issued": time.time()},
+    token = jwt.encode({"username": user[0], "permission": user[2], "iat": int(time.time()), "exp": int(time.time() + (60 * 15))},
                        database.get_setting('jwtToken'), algorithm='HS256')
     resp = make_response(json.dumps({"token": token.decode()}))
     resp.headers['Content-Type'] = 'application/json'
