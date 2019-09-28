@@ -174,8 +174,8 @@ def setting(settingName):
         if request.method == 'PUT':
             if 'value' in request.json:
                 value = request.json['value']
-                if not re.search(validSettingValues[settingName], value):
-                    resp = make_response(json.dumps({"error": "Value not valid"}))
+                if (type(value) is not str) or (settingName not in validSettingValues) or (not re.search(validSettingValues[settingName], value)):
+                    resp = make_response(json.dumps({"error": "Not very working value/setting pair!"}))
                     resp.headers['Content-Type'] = 'application/json'
                     resp.status_code = 400
                     return resp
@@ -210,7 +210,7 @@ def getUser(username):
     elif request.method == 'PUT':
         if request.json is None:
             return returnError(400, "Json Body not found!")
-        if 'password' in request.json and verify_jwt(request, "userEdit_password:" + username):
+        if 'password' in request.json and type(request.json['password']) is str and verify_jwt(request, "userEdit_password:" + username):
             database.set_user_attribute(username, "password", sha256(request.json['password'].encode()).hexdigest())
         resp = make_response(json.dumps({"message": "Requested!"}))
         resp.headers['Content-Type'] = 'application/json'
