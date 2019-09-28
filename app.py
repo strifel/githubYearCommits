@@ -1,5 +1,5 @@
 from sqlite3 import IntegrityError
-from src.Helper import returnError
+from src.Helper import returnError, returnJSON, returnMessage
 from flask import render_template, make_response, send_from_directory, send_file, request, Flask, g
 from src.Settings import validSettings as validSettingValues
 import re
@@ -104,7 +104,7 @@ def participant_api(username):
             if dbUser[0] == username:
                 found = True
         if not found:
-            return make_response(json.dumps({"error": "User not found"}), 404, {"Content-Type": "application/json"})
+            return returnError(404, "User not found")
     # Finding year in query string
     if "contributions_year" in request.args:
         year = int(request.args['contributions_year'])
@@ -146,24 +146,19 @@ def participants(username):
             entries = []
             for row in database.get_participants():
                 entries.append(row[0])
-            resp = make_response(json.dumps(entries))
-            resp.headers['Content-Type'] = 'application/json'
-            return resp
+            return returnJSON(entries)
         elif request.method == 'POST':
             try:
                 database.add_participants(username)
             except IntegrityError:
-                resp = make_response(json.dumps({"error": "Participant already exists"}), 400)
+                return returnError(409, "Participant already exists")
             else:
                 resp = make_response(json.dumps({"message": "Added participant!"}), 201)
-            resp.headers['Content-Type'] = 'application/json'
-            return resp
+                resp.headers['Content-Type'] = 'application/json'
+                return resp
         elif request.method == 'DELETE':
             database.remove_participants(username)
-            resp = make_response(json.dumps({"message": "Removed participant!"}))
-            resp.headers['Content-Type'] = 'application/json'
-            return resp
-            pass
+            return returnMessage("Removed participant!")
 
 
 @app.route('/api/setting/<string:settingName>', methods=['GET', 'PUT'])
@@ -175,19 +170,11 @@ def setting(settingName):
             if 'value' in request.json:
                 value = request.json['value']
                 if (type(value) is not str) or (settingName not in validSettingValues) or (not re.search(validSettingValues[settingName], value)):
-                    resp = make_response(json.dumps({"error": "Not very working value/setting pair!"}))
-                    resp.headers['Content-Type'] = 'application/json'
-                    resp.status_code = 400
-                    return resp
+                    return returnError(400, "Not working setting/value pair")
                 database.set_setting(settingName, value)
-        resp = make_response(json.dumps({"name": settingName, "value": database.get_setting(settingName)}))
-        resp.headers['Content-Type'] = 'application/json'
-        return resp
+        return returnJSON({"name": settingName, "value": database.get_setting(settingName)})
     else:
-        resp = make_response(json.dumps({"error": "Login not found"}))
-        resp.headers['Content-Type'] = 'application/json'
-        resp.status_code = 403
-        return resp
+        return returnError(403, "There was a login error")
 
 
 @app.route('/api/users/<string:username>', methods=['POST', 'PUT', 'GET'])
@@ -212,9 +199,7 @@ def getUser(username):
             return returnError(400, "Json Body not found!")
         if 'password' in request.json and type(request.json['password']) is str and verify_jwt(request, "userEdit_password:" + username):
             database.set_user_attribute(username, "password", sha256(request.json['password'].encode()).hexdigest())
-        resp = make_response(json.dumps({"message": "Requested!"}))
-        resp.headers['Content-Type'] = 'application/json'
-        return resp
+        return returnMessage("Okay!")
     else:
         return returnError(404, "Not found!")
 
@@ -229,10 +214,7 @@ def login():
         return returnError(403, "User not found")
     token = jwt.encode({"username": user[0], "permission": user[2], "iat": int(time.time()), "exp": int(time.time() + (60 * 15))},
                        database.get_setting('jwtToken'), algorithm='HS256')
-    resp = make_response(json.dumps({"token": token.decode()}))
-    resp.headers['Content-Type'] = 'application/json'
-    resp.status_code = 200
-    return resp
+    return returnJSON({"token": token.decode()})
 
 
 # Serve static directory
