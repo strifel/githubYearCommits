@@ -46,6 +46,7 @@ function saveSetting() {
 }
 
 //Participants
+let selectedUsersPermissions = "";
 
 function addParticipant() {
     let usernameField = document.getElementById('participantUsername');
@@ -121,9 +122,38 @@ document.getElementById('users').onchange = () => {
     let option = document.getElementById('users').value;
     if (option === "placeholder") {
         document.getElementById('userPassword').hidden = true;
+        document.getElementById('userPermissionsLabel').hidden = true;
+        document.getElementById('userPermissions').hidden = true;
+        document.getElementById('userPermissionAdd').hidden = true;
         return;
     }
     document.getElementById('userPassword').hidden = false;
+    document.getElementById('userPermissions').hidden = false;
+    document.getElementById('userPermissionsLabel').hidden = false;
+    let userInfoRequest = new XMLHttpRequest();
+    userInfoRequest.onloadend = () => {
+        if (userInfoRequest.status === 200) {
+            let response = JSON.parse(userInfoRequest.responseText);
+            selectedUsersPermissions = response['permissions'];
+            if (selectedUsersPermissions === "*") {
+                document.getElementById('userPermissions').innerHTML = "<p class='permission' data-affect-dark-mode='color' onclick='removePermission(\"*\");'>All permissions granted!</p>";
+                document.getElementById('userPermissionAdd').hidden = true;
+            } else {
+                document.getElementById('userPermissions').innerHTML = "";
+                selectedUsersPermissions.slice(1, selectedUsersPermissions.length - 1).split(")(").forEach((permission) => {
+                    document.getElementById('userPermissions').innerHTML += "<p class='permission' data-affect-dark-mode='color' onclick='removePermission(\"" + permission + "\");'>" + permission + ",</p>";
+                });
+                document.getElementById('userPermissionAdd').hidden = false;
+            }
+        }
+
+        //Reload dark mode
+       changeDarkMode(false);
+       changeDarkMode(false);
+    };
+    userInfoRequest.open("GET", "/api/users/" + option);
+    userInfoRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+    userInfoRequest.send();
 };
 
 
@@ -140,5 +170,41 @@ document.getElementById('userPassword').onchange = () => {
     setPasswordRequest.send(JSON.stringify({"password": document.getElementById('userPassword').value}));
 };
 
+function removePermission(permission) {
+    if (permission !== "*") {
+        permission = "(" + permission + ")";
+    }
+    selectedUsersPermissions = selectedUsersPermissions.replace(permission, "");
+    syncUserPermissions();
+}
+
+
+document.getElementById('userPermissionAdd').onchange = () => {
+    let value = document.getElementById('userPermissionAdd').value;
+    if (value === "") return;
+    if (value === "*") {
+        selectedUsersPermissions = "*";
+    } else {
+        selectedUsersPermissions += "(" + value + ")";
+    }
+    syncUserPermissions();
+};
+
+function syncUserPermissions() {
+    let setPermissionRequest = new XMLHttpRequest();
+    setPermissionRequest.onreadystatechange = () => {
+        if (setPermissionRequest.readyState === 4) {
+            document.getElementById('userPermissionAdd').value = '';
+            document.getElementById('users').onchange();
+        }
+    };
+    setPermissionRequest.open('PUT', '/api/users/' + document.getElementById('users').value);
+    setPermissionRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+    setPermissionRequest.setRequestHeader('Content-Type', 'application/json');
+    setPermissionRequest.send(JSON.stringify({"permissions": selectedUsersPermissions}));
+}
+
 reloadUsers();
 document.getElementById('users').onchange();
+
+

@@ -98,6 +98,12 @@ class DatabaseController:
             database.close()
             return []
 
+    def get_user_by_name(self, username):
+        database = sqlite3.connect(self.database)
+        users = database.execute("SELECT * FROM user WHERE username=?", (username,))
+        user = users.fetchone()
+        return user
+
     def return_user_with_name_and_password(self, user, passwordHash):
         database = sqlite3.connect(self.database)
         users = database.execute("SELECT * FROM user WHERE username=?", (user,))

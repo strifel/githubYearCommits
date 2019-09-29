@@ -22,6 +22,10 @@
         .settingValueError {
             border-color: red;
         }
+
+        .permission {
+            display: inline;
+        }
     </style>
 </head>
 <body data-affect-dark-mode="!background-color">
@@ -85,6 +89,9 @@
                 <select id="users" class="form-control" data-affect-dark-mode="!background-color&color"></select>
                 <br>
                 <input id="userPassword" class="form-control" type="password" data-affect-dark-mode="!background-color&color" placeholder="Password" hidden>
+                <br>
+                <p data-affect-dark-mode="color" class="permission" id="userPermissionsLabel" hidden>Permissions: </p><p class="permission" id="userPermissions"></p>
+                <input id="userPermissionAdd" class="form-control" data-affect-dark-mode="!background-color&color" placeholder="New permission" hidden>
             </div>
         </div>
     </div>

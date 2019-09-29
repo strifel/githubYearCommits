@@ -186,7 +186,8 @@ def getUser(username):
             resp.headers['Content-Type'] = 'application/json'
             return resp
         elif verify_jwt(request, "showUserInformation:" + username):
-            pass
+            user = database.get_user_by_name(username)
+            return returnJSON({"username": user[0], "permissions": user[2]})
         else:
             return returnError(403, "Not allowed!")
     elif request.method == 'POST':
@@ -199,6 +200,8 @@ def getUser(username):
             return returnError(400, "Json Body not found!")
         if 'password' in request.json and type(request.json['password']) is str and verify_jwt(request, "userEdit_password:" + username):
             database.set_user_attribute(username, "password", sha256(request.json['password'].encode()).hexdigest())
+        if 'permissions' in request.json and type(request.json['permissions']) is str and verify_jwt(request, "user:permissions"):
+            database.set_user_attribute(username, "permission", request.json['permissions'])
         return returnMessage("Okay!")
     else:
         return returnError(404, "Not found!")
