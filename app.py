@@ -159,6 +159,8 @@ def participants(username):
         elif request.method == 'DELETE':
             database.remove_participants(username)
             return returnMessage("Removed participant!")
+    else:
+        return returnError(403, "You are not authorized!")
 
 
 @app.route('/api/setting/<string:settingName>', methods=['GET', 'PUT'])
@@ -185,7 +187,7 @@ def getUser(username):
             resp = make_response(json.dumps(database.get_users_names()))
             resp.headers['Content-Type'] = 'application/json'
             return resp
-        elif verify_jwt(request, "showUserInformation:" + username):
+        elif username is not None and verify_jwt(request, "showUserInformation:" + username):
             user = database.get_user_by_name(username)
             return returnJSON({"username": user[0], "permissions": user[2]})
         else:
