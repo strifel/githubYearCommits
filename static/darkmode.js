@@ -30,14 +30,14 @@ function changeDarkMode(userSet) {
         themeColor = '#f5f5f5';
         oppositeColor = '#1D1F21';
     }
-    $("[data-affect-dark-mode]").each(function () {
-        let attribute = this.getAttribute("data-affect-dark-mode");
+    document.querySelectorAll("[data-affect-dark-mode]").forEach(function (element) {
+        let attribute = element.getAttribute("data-affect-dark-mode");
         if (attribute.includes("&")) {
             attribute.split("&").forEach((attr) => {
-                setModeForElement(this, attr, themeColor, oppositeColor, document.darkMode);
+                setModeForElement(element, attr, themeColor, oppositeColor, document.darkMode);
             });
         } else {
-            setModeForElement(this, attribute, themeColor, oppositeColor, document.darkMode);
+            setModeForElement(element, attribute, themeColor, oppositeColor, document.darkMode);
         }
     });
 
