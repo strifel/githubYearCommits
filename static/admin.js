@@ -110,6 +110,10 @@ function reloadUsers() {
                participant.innerText = name;
                chooser.add(participant);
             });
+        } else if (getUserRequest.readyState === 4 && getUserRequest.status === 403) {
+            chooser.innerHTML = '<option value="'+ localStorage.getItem("username") + '">You</option>';
+            chooser.hidden = true;
+            chooser.onchange();
         }
     };
     getUserRequest.open('GET', '/api/users');
@@ -128,8 +132,6 @@ document.getElementById('users').onchange = () => {
         return;
     }
     document.getElementById('userPassword').hidden = false;
-    document.getElementById('userPermissions').hidden = false;
-    document.getElementById('userPermissionsLabel').hidden = false;
     let userInfoRequest = new XMLHttpRequest();
     userInfoRequest.onloadend = () => {
         if (userInfoRequest.status === 200) {
@@ -145,6 +147,11 @@ document.getElementById('users').onchange = () => {
                 });
                 document.getElementById('userPermissionAdd').hidden = false;
             }
+            document.getElementById('userPermissions').hidden = false;
+            document.getElementById('userPermissionsLabel').hidden = false;
+        } else if (userInfoRequest.status === 403) {
+            document.getElementById('userPermissions').hidden = true;
+            document.getElementById('userPermissionsLabel').hidden = true;
         }
 
         //Reload dark mode
