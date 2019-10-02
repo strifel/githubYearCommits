@@ -217,9 +217,10 @@ def login():
                                                        sha256(request.json['password'].encode()).hexdigest())
     if not user:
         return returnError(403, "User not found")
-    token = jwt.encode({"username": user[0], "permission": user[2], "iat": int(time.time()), "exp": int(time.time() + (60 * 15))},
+    exp = int(time.time() + (60 * 15))
+    token = jwt.encode({"username": user[0], "permission": user[2], "iat": int(time.time()), "exp": exp},
                        database.get_setting('jwtToken'), algorithm='HS256')
-    return returnJSON({"token": token.decode()})
+    return returnJSON({"token": token.decode(), "exp": exp})
 
 
 # Serve static directory

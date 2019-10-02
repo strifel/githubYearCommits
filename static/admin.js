@@ -7,6 +7,7 @@ document.getElementById('setting').onchange = () => {
     document.getElementById('settingValue').classList.remove("settingValueError");
     document.getElementById('settingValue').value = "";
     if (setting !== 'placeholder') {
+        checkTokenValid();
         let settingValueRequest = new XMLHttpRequest();
         settingValueRequest.onreadystatechange = () => {
             if (settingValueRequest.readyState === 4 && settingValueRequest.status === 200) {
@@ -27,6 +28,7 @@ function saveSetting() {
     let setting = document.getElementById('setting').value;
     let value = document.getElementById('settingValue').value;
     if (!setting.hidden && value !== null) {
+        checkTokenValid();
         let settingChangeRequest = new XMLHttpRequest();
         settingChangeRequest.onreadystatechange = () => {
             if (settingChangeRequest.readyState === 4 && settingChangeRequest.status === 200) {
@@ -49,6 +51,7 @@ function saveSetting() {
 let selectedUsersPermissions = "";
 
 function addParticipant() {
+    checkTokenValid();
     let usernameField = document.getElementById('participantUsername');
     let addRequest = new XMLHttpRequest();
     addRequest.onreadystatechange = () => {
@@ -63,6 +66,7 @@ function addParticipant() {
 }
 
 function removeParticipant() {
+    checkTokenValid();
     let username = document.getElementById('participants').value;
     let removeRequest = new XMLHttpRequest();
     removeRequest.onreadystatechange = () => {
@@ -76,6 +80,7 @@ function removeParticipant() {
 }
 
 function reloadParticipants() {
+    checkTokenValid();
     let chooser = document.getElementById('participants');
     chooser.innerHTML = '<option value="placeholder">Please choose a participant to remove</option>';
     let getRequest = new XMLHttpRequest();
@@ -99,6 +104,7 @@ reloadParticipants();
 // Users
 
 function reloadUsers() {
+    checkTokenValid()
     let chooser = document.getElementById('users');
     chooser.innerHTML = '<option value="placeholder">Please choose a user to edit</option>';
     let getUserRequest = new XMLHttpRequest();
@@ -123,6 +129,7 @@ function reloadUsers() {
 
 
 document.getElementById('users').onchange = () => {
+    checkTokenValid();
     let option = document.getElementById('users').value;
     if (option === "placeholder") {
         document.getElementById('userPassword').hidden = true;
@@ -165,6 +172,7 @@ document.getElementById('users').onchange = () => {
 
 
 document.getElementById('userPassword').onchange = () => {
+    checkTokenValid();
     let setPasswordRequest = new XMLHttpRequest();
     setPasswordRequest.onreadystatechange = () => {
         if (setPasswordRequest.readyState === 4) {
@@ -198,6 +206,7 @@ document.getElementById('userPermissionAdd').onchange = () => {
 };
 
 function syncUserPermissions() {
+    checkTokenValid();
     let setPermissionRequest = new XMLHttpRequest();
     setPermissionRequest.onreadystatechange = () => {
         if (setPermissionRequest.readyState === 4) {
@@ -214,4 +223,10 @@ function syncUserPermissions() {
 reloadUsers();
 document.getElementById('users').onchange();
 
+
+function checkTokenValid(){
+    if (parseInt(localStorage.getItem("exp")) <= (new Date().getTime() / 1000)) {
+        location.href = "/login";
+    }
+}
 
