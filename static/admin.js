@@ -104,7 +104,7 @@ reloadParticipants();
 // Users
 
 function reloadUsers() {
-    checkTokenValid()
+    checkTokenValid();
     let chooser = document.getElementById('users');
     chooser.innerHTML = '<option value="placeholder">Please choose a user to edit</option>';
     let getUserRequest = new XMLHttpRequest();
@@ -121,6 +121,7 @@ function reloadUsers() {
             chooser.hidden = true;
             chooser.onchange();
         }
+        document.getElementById('users').onchange();
     };
     getUserRequest.open('GET', '/api/users');
     getUserRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
@@ -220,8 +221,31 @@ function syncUserPermissions() {
     setPermissionRequest.send(JSON.stringify({"permissions": selectedUsersPermissions}));
 }
 
+function createUser() {
+    let usernameField = document.getElementById('newUserUsername');
+    let passwordField = document.getElementById('newUserPassword');
+    let permissionsField = document.getElementById('newUserPermissions');
+    if (usernameField.value === "" || passwordField.value === "") return;
+    let permissions = permissionsField.value.replace("$user", usernameField.value);
+    let createUserRequest = new XMLHttpRequest();
+    createUserRequest.onloadend = () => {
+        if (createUserRequest.status === 200) {
+            reloadUsers();
+            usernameField.value = "";
+            passwordField.value = "";
+            permissionsField.value = "";
+            document.getElementById('addUserModal').style.display = 'none';
+        } else if (createUserRequest.getResponseHeader("Content-Type") === "application/json" && JSON.parse(createUserRequest.responseText).hasOwnProperty("error")) {
+            alert(JSON.parse(createUserRequest.responseText)['error']);
+        }
+    };
+    createUserRequest.open("POST", "/api/users");
+    createUserRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+    createUserRequest.setRequestHeader('Content-Type', 'application/json');
+    createUserRequest.send(JSON.stringify({"username": usernameField.value, "password": passwordField.value, "permissions": permissions}));
+}
+
 reloadUsers();
-document.getElementById('users').onchange();
 
 
 function checkTokenValid(){

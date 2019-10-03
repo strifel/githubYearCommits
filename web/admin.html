@@ -7,6 +7,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
 
+    <link href="/static/modal.css" rel="stylesheet">
     <style>
         .col-md-5 {
             margin: 20px auto;
@@ -81,7 +82,8 @@
     <div class="col-md-5">
         <div class="card" data-affect-dark-mode="?dark">
             <div class="card-header" data-affect-dark-mode="color">
-                <h3>User</h3>
+                <h3 style="display: inline">User</h3>
+                <button class="btn btn-primary float-right" onclick="document.getElementById('addUserModal').style.display = 'block';">+</button>
             </div>
             <div class="card-body">
                 <select id="users" class="form-control" data-affect-dark-mode="!background-color&color"></select>
@@ -105,6 +107,20 @@
                 </button>
             </div>
         </div>
+    </div>
+</div>
+<!-- Modal definition -->
+<div id="addUserModal" onclick="if (event.target === this) this.style.display = 'none';" class="modal">
+    <div class="modal-content card" style="min-width: 250px; width: 40%;" data-affect-dark-mode="?modal-content-dark">
+        <span class="modal-close" onclick="document.getElementById('addUserModal').style.display = 'none';">&times;</span>
+        <input id="newUserUsername" class="form-control" placeholder="Username of new User" data-affect-dark-mode="!background-color&color">
+        <input id="newUserPassword" class="form-control" type="password" placeholder="Password of new User" data-affect-dark-mode="!background-color&color">
+        <select id="newUserPermissions" class="form-control" data-affect-dark-mode="!background-color&color">
+            <option value="(userEdit_password:$user)">Create normal user account (Can change his password)</option>
+            <option value="" selected>Create unprivileged user account (Can do nothing)</option>
+            <option value="*">Create admin account (Can do everything)</option>
+        </select>
+        <button class="btn btn-success" onclick="createUser()">Create user</button>
     </div>
 </div>
 <script src="/static/admin.js"></script>

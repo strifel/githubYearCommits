@@ -115,3 +115,9 @@ class DatabaseController:
                 return False
         else:
             return False
+
+    def create_user(self, username, passwordHash, permissions):
+        database = sqlite3.connect(self.database)
+        database.execute("INSERT INTO user (username, password, permission) VALUES (?, ?, ?)", (username, passwordHash, permissions))
+        database.commit()
+        database.close()

@@ -179,9 +179,9 @@ def setting(settingName):
         return returnError(403, "There was a login error")
 
 
-@app.route('/api/users/<string:username>', methods=['POST', 'PUT', 'GET'])
-@app.route('/api/users', methods=['GET'], defaults={"username": None})
-def getUser(username):
+@app.route('/api/users/<string:username>', methods=['PUT', 'GET'])
+@app.route('/api/users', methods=['GET', 'POST'], defaults={"username": None})
+def user(username):
     if request.method == 'GET':
         if username is None and verify_jwt(request, "listUser"):
             resp = make_response(json.dumps(database.get_users_names()))
@@ -194,7 +194,17 @@ def getUser(username):
             return returnError(403, "Not allowed!")
     elif request.method == 'POST':
         if verify_jwt(request, "addUser"):
-            pass
+            if request.json is None or \
+                    (('username' not in request.json) or (type(request.json['username']) != str)) or \
+                    ('password' not in request.json) or (type(request.json['password']) != str) or \
+                    ('permissions' not in request.json) or (type(request.json['permissions']) != str):
+                return returnError(400, "The request must be JSON and must contain username, password and permissions")
+            try:
+                database.create_user(request.json['username'], sha256(request.json['password'].encode()).hexdigest(),
+                                     request.json['permissions'])
+            except IntegrityError:
+                return returnError(409, "User already exists")
+            return returnMessage("User added!")
         else:
             return returnError(403, "You are not allowed to add a user!")
     elif request.method == 'PUT':
