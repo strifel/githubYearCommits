@@ -121,3 +121,9 @@ class DatabaseController:
         database.execute("INSERT INTO user (username, password, permission) VALUES (?, ?, ?)", (username, passwordHash, permissions))
         database.commit()
         database.close()
+
+    def delete_user(self, username):
+        database = sqlite3.connect(self.database)
+        database.execute("DELETE FROM user WHERE username=?", (username,))
+        database.commit()
+        database.close()

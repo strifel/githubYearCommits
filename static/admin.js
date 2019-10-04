@@ -137,6 +137,7 @@ document.getElementById('users').onchange = () => {
         document.getElementById('userPermissionsLabel').hidden = true;
         document.getElementById('userPermissions').hidden = true;
         document.getElementById('userPermissionAdd').hidden = true;
+        document.getElementById('userDelete').hidden = true;
         return;
     }
     document.getElementById('userPassword').hidden = false;
@@ -157,9 +158,11 @@ document.getElementById('users').onchange = () => {
             }
             document.getElementById('userPermissions').hidden = false;
             document.getElementById('userPermissionsLabel').hidden = false;
+            document.getElementById('userDelete').hidden = false;
         } else if (userInfoRequest.status === 403) {
             document.getElementById('userPermissions').hidden = true;
             document.getElementById('userPermissionsLabel').hidden = true;
+            document.getElementById('userDelete').hidden = true;
         }
 
         //Reload dark mode
@@ -243,6 +246,15 @@ function createUser() {
     createUserRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
     createUserRequest.setRequestHeader('Content-Type', 'application/json');
     createUserRequest.send(JSON.stringify({"username": usernameField.value, "password": passwordField.value, "permissions": permissions}));
+}
+
+function deleteUser() {
+    let username = document.getElementById('users').value;
+    let deleteUserRequest = new XMLHttpRequest();
+    deleteUserRequest.onloadend = () => reloadUsers();
+    deleteUserRequest.open("DELETE", "/api/users/" + username);
+    deleteUserRequest.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+    deleteUserRequest.send();
 }
 
 reloadUsers();

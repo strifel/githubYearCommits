@@ -179,7 +179,7 @@ def setting(settingName):
         return returnError(403, "There was a login error")
 
 
-@app.route('/api/users/<string:username>', methods=['PUT', 'GET'])
+@app.route('/api/users/<string:username>', methods=['PUT', 'GET', 'DELETE'])
 @app.route('/api/users', methods=['GET', 'POST'], defaults={"username": None})
 def user(username):
     if request.method == 'GET':
@@ -215,6 +215,12 @@ def user(username):
         if 'permissions' in request.json and type(request.json['permissions']) is str and verify_jwt(request, "user:permissions"):
             database.set_user_attribute(username, "permission", request.json['permissions'])
         return returnMessage("Okay!")
+    elif request.method == 'DELETE':
+        if verify_jwt(request, "deleteUser"):
+            database.delete_user(username)
+            return returnMessage("Deleted user!")
+        else:
+            return returnError(403, "You do not have the permission to delete a user")
     else:
         return returnError(404, "Not found!")
 
