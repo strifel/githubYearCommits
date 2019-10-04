@@ -189,6 +189,8 @@ def user(username):
             return resp
         elif username is not None and verify_jwt(request, "showUserInformation:" + username):
             user = database.get_user_by_name(username)
+            if user is None:
+                return returnError(404, "User does not exists")
             return returnJSON({"username": user[0], "permissions": user[2]})
         else:
             return returnError(403, "Not allowed!")
