@@ -1,4 +1,4 @@
-let users = document.querySelectorAll('.contributionUser');
+let users;
 let choosen = '';
 
 function calculateFor(contributions) {
@@ -14,17 +14,20 @@ function clear() {
     });
 }
 
-users.forEach((user) => {
-    user.onclick = () => {
-        let username = user.getElementsByClassName('username')[0].innerText;
-        if (username === choosen) {
-            clear();
-            choosen = '';
-        } else {
-            let contributions = parseInt(user.getElementsByClassName('contributions')[0].innerText);
-            calculateFor(contributions);
-            choosen = username;
-        }
-    };
-});
+function replacePercentageHandler() {
+    users = document.querySelectorAll('.contributionUser');
+    users.forEach((user) => {
+        user.onclick = () => {
+            let username = user.getElementsByClassName('username')[0].innerText;
+            if (username === choosen) {
+                clear();
+                choosen = '';
+            } else {
+                let contributions = parseInt(user.getElementsByClassName('contributions')[0].innerText);
+                calculateFor(contributions);
+                choosen = username;
+            }
+        };
+    });
+}
 

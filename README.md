@@ -8,7 +8,6 @@ A use case I can think of is at a Hackathon where you want to create (something 
 
 This project is still being worked on:
 ### Todos:
-- Bringing everything into Javascript World. (AJAX) (Only main page is missing by now)
 - let the people edit their profile pages
 - More types of challenges (not only year/eternity). Enter a specific start/end date.
 - Make everything more beautiful (Please help! :))
