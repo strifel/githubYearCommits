@@ -33,7 +33,8 @@ def verify_jwt(req, permissionsRequired):
                 return True
             elif "(" + permissionsRequired.split(":")[0] + ":*)" in response["permission"]:
                 return True
-        return False
+        else:
+            return "(" + permissionsRequired + ")" in response["permission"]
     except Exception:
         return False
 
