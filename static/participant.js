@@ -8,7 +8,7 @@ function loadParticipant(username, query) {
                 // Loading...
                 let participant = JSON.parse(participantRequest.responseText);
                 document.title = 'Participant - ' + participant['general']['username'];
-                document.getElementById('profile_picture').src = 'https://github.com/' + participant['general']['username'] + '.png?size=150';
+                document.getElementById('profile_picture').src = 'https://github.com/' + participant['general']['username'] + '.png?size=5000';
                 document.getElementById('profile_picture').hidden = false;
                 {
                     let link = document.getElementById('profile_link');
