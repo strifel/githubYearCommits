@@ -19,10 +19,12 @@
 </div>
 <div class="container">
     <div class="row">
-        <div id="user" class="col-xs-12 col-sm-12 col-md-6 offset-md-3 col-lg-6 offset-lg-3">
-            <table>
+        <div id="user" class="col-xs-12 col-sm-8 col-md-6 offset-sm-2 offset-md-3 col-lg-4 offset-lg-4 col-xl-4 offset-xl-4">
+            <table class="participant">
                 <tr>
-                    <td><img id="profile_picture" hidden alt="Profile picture" width="150" height="150"></td>
+                    <td><img id="profile_picture" hidden alt="Profile picture"></td>
+                </tr>
+                <tr>
                     <td>
                         <a id="profile_link"></a>
                         <h4 id="contributions_in_year" data-affect-dark-mode="color"></h4>
@@ -99,5 +101,20 @@
             -webkit-transform: scale(1.0);
             transform: scale(1.0);
         }
+    }
+
+    @media screen and (max-width: 576px) {
+        #profile_picture {
+            width: 100%;
+        }
+    }
+
+    #profile_picture {
+        display: block;
+        margin: 0 auto;
+    }
+
+    .participant {
+        width: 100%;
     }
 </style>
