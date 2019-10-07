@@ -6,22 +6,22 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
+
+    <link href="/static/spinner.css" rel="stylesheet">
 </head>
 <body data-affect-dark-mode="!background-color">
-
-<h1 data-affect-dark-mode="color">Contributions {{ timespan }}</h1>
-<table>
-    {% for user in users %}
-        <tr class="contributionUser">
-            <td class="usernameTD"><a class="username" href="/participant/{{ user.name }}">{{ user.name }}</a></td>
-            <td class="contributionsTD" data-affect-dark-mode="color"><a class="contributions">{{ user.contributions }}</a></td>
-            <td class="percentageTD" data-affect-dark-mode="color"><a class="percentage"></a></td>
-        </tr>
-    {% endfor %}
+<div class="spinner" id="spinner">
+    <div class="bounce1" data-affect-dark-mode="background-color"></div>
+    <div class="bounce2" data-affect-dark-mode="background-color"></div>
+    <div class="bounce3" data-affect-dark-mode="background-color"></div>
+</div>
+<h1 data-affect-dark-mode="color" id="title"></h1>
+<table id="contributionsTable">
 </table>
 
 <button onclick="changeDarkMode(true)" id="darkModeButton">Dark Mode</button>
 
+<script src="/static/contributions.js"></script>
 <script src="/static/percentage.js"></script>
 <script src="/static/darkmode.js"></script>
 </body>

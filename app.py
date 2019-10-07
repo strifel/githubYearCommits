@@ -11,12 +11,10 @@ from src.ConnectionManager import CommitConnection
 from src.ConnectionManager import DatabaseController
 from src.Participant import Participant
 from datetime import datetime
+from src.Util import sortWithCount
 import operator
 
 app = Flask(__name__, static_url_path='')
-# not needed but I am afraid deleting it.
-users = list()
-timeUpdated = 0
 database = DatabaseController()
 
 
@@ -33,51 +31,33 @@ def verify_jwt(req, permissionsRequired):
                 return True
             elif "(" + permissionsRequired.split(":")[0] + ":*)" in response["permission"]:
                 return True
-        return False
+        else:
+            return "(" + permissionsRequired + ")" in response["permission"]
     except Exception:
         return False
 
 
-@app.route('/', methods=['GET'], defaults={"reload": False})
-@app.route('/force', methods=['GET'], defaults={"reload": True})
-def main_page(reload):
-    global timeUpdated
-    global users
-    timespan = ""
+@app.route('/', methods=['GET'])
+def main_page():
+    return make_response(send_file("web/index.html"))
+
+
+@app.route('/api/contributions', methods=['GET'])
+def contributions():
     duration = database.get_setting("duration")
-    year = ""
+    pcontributions = {}
+    attribute = ""
     if duration == "year":
-        year = datetime.now().strftime("%Y")
-    if (reload and (database.get_setting("allow-force") == "true" or
-                    request.cookies.get("gyc_login") == database.getPassword())) or \
-            datetime.now().timestamp() - timeUpdated > database.get_setting("cache"):
-        users = list()
-        timeUpdated = datetime.now().timestamp()
-        user_contributions = {}
-        for user in database.get_participants():
-            if duration == "year":
-                user_contributions.update({user[0]: CommitConnection.getCommitsInYear(year, user[0])})
-            elif duration == "eternity":
-                user_contributions.update({user[0]: CommitConnection.getTotalCommits(user[0])})
-            else:
-                user_contributions.update({user[0]: 0})
-        sorted_contributions = sorted(user_contributions.items(), key=operator.itemgetter(1), reverse=True)
-        for user in sorted_contributions:
-            users.append({"name": user[0], "contributions": user[1]})
-    if duration == "year":
-        timespan = "in " + year
-    elif duration == "eternity":
-        timespan = "ever"
-    # users.append({"name": user[0], "contributions": CommitConnection.getCommitsInYear(year, user[0])})
-    # users.append(
-    # users.append({"name": "robmroi03", "contributions": CommitConnection.getCommitsInYear(year, "robmroi03")})
-    #    {"name": "felixletsplayyt", "contributions": CommitConnection.getCommitsInYear(year, "felixletsplayyt")})
-    resp = make_response(render_template("index.html.twig", users=users, time=datetime.fromtimestamp(timeUpdated)
-                                         .strftime('%H:%M:%S'), timespan=timespan))
-    resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
-    resp.headers['Pragma'] = "no-cache"
-    resp.headers['Expires'] = "0"
-    return resp
+        attribute = datetime.now().strftime("%Y")
+    for participant in database.get_participants():
+        if duration == "year":
+            pcontributions.update({participant[0]: {"username": participant[0], "count": CommitConnection.getCommitsInYear(attribute, participant[0])}})
+        elif duration == "eternity":
+            pcontributions.update({participant[0]: {"username": participant[0], "count": CommitConnection.getTotalCommits(participant[0])}})
+        else:
+            pcontributions.update({participant[0]: {"username": participant[0], "count": 0}})
+    pcontributions = sortWithCount(pcontributions)
+    return returnJSON({"participants": pcontributions, "information": {"duration": duration, "attribute": attribute}})
 
 
 @app.route('/participant/<string:participant>', methods=['GET'])
@@ -179,7 +159,7 @@ def setting(settingName):
         return returnError(403, "There was a login error")
 
 
-@app.route('/api/users/<string:username>', methods=['PUT', 'GET'])
+@app.route('/api/users/<string:username>', methods=['PUT', 'GET', 'DELETE'])
 @app.route('/api/users', methods=['GET', 'POST'], defaults={"username": None})
 def user(username):
     if request.method == 'GET':
@@ -189,6 +169,8 @@ def user(username):
             return resp
         elif username is not None and verify_jwt(request, "showUserInformation:" + username):
             user = database.get_user_by_name(username)
+            if user is None:
+                return returnError(404, "User does not exists")
             return returnJSON({"username": user[0], "permissions": user[2]})
         else:
             return returnError(403, "Not allowed!")
@@ -215,6 +197,12 @@ def user(username):
         if 'permissions' in request.json and type(request.json['permissions']) is str and verify_jwt(request, "user:permissions"):
             database.set_user_attribute(username, "permission", request.json['permissions'])
         return returnMessage("Okay!")
+    elif request.method == 'DELETE':
+        if verify_jwt(request, "deleteUser"):
+            database.delete_user(username)
+            return returnMessage("Deleted user!")
+        else:
+            return returnError(403, "You do not have the permission to delete a user")
     else:
         return returnError(404, "Not found!")
 
