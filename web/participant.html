@@ -2,7 +2,7 @@
 <head>
     <title>Participant</title>
     <meta charset="UTF-8">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" rel="stylesheet">
     <link href="/static/spinner.css" rel="stylesheet">
@@ -19,27 +19,31 @@
     <div class="bounce2" data-affect-dark-mode="background-color"></div>
     <div class="bounce3" data-affect-dark-mode="background-color"></div>
 </div>
-<div style="display:flex;justify-content:center;align-items:center;">
-    <div id="user">
-        <table>
-            <tr>
-                <td><img id="profile_picture" hidden alt="Profile picture" width="150" height="150"></td>
-                <td>
-                    <a id="profile_link"></a>
-                    <h4 id="contributions_in_year" data-affect-dark-mode="color"></h4>
-                    <h4 hidden data-affect-dark-mode="color" id="commit_email_header">Email:
-                        <a id="commit_email"></a>
-                    </h4>
-                    <h4 id="contribution_streak" data-affect-dark-mode="color"></h4>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <h3 id="languageText" data-affect-dark-mode="color" hidden>Languages:</h3><br>
-                    <ol id="languages"></ol>
-                </td>
-            </tr>
-        </table>
+<div class="container">
+    <div class="row">
+        <div id="user" class="col-xs-12 col-sm-8 col-md-6 offset-sm-2 offset-md-3 col-lg-4 offset-lg-4 col-xl-4 offset-xl-4">
+            <table class="participant">
+                <tr>
+                    <td><img id="profile_picture" hidden alt="Profile picture"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a id="profile_link"></a>
+                        <h4 id="contributions_in_year" data-affect-dark-mode="color"></h4>
+                        <h4 hidden data-affect-dark-mode="color" id="commit_email_header">Email:
+                            <a id="commit_email"></a>
+                        </h4>
+                        <h4 id="contribution_streak" data-affect-dark-mode="color"></h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3 id="languageText" data-affect-dark-mode="color" hidden>Languages:</h3><br>
+                        <ol id="languages"></ol>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
 
