@@ -9,6 +9,13 @@ def returnError(status, message):
     return resp
 
 
+def returnJSONText(text):
+    resp = make_response(text)
+    resp.headers['Content-Type'] = 'application/json'
+    resp.status_code = 200
+    return resp
+
+
 def returnJSON(jsonPayload):
     resp = make_response(json.dumps(jsonPayload))
     resp.headers['Content-Type'] = 'application/json'

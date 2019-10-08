@@ -31,6 +31,7 @@ db.execute("CREATE TABLE IF NOT EXISTS participant (username string PRIMARY KEY 
 db.execute("INSERT INTO participant (username) VALUES ('strifel')")
 db.execute("CREATE TABLE IF NOT EXISTS user (username string PRIMARY KEY NOT NULL, password string NOT NULL, permission string, twofo string)")
 db.execute("INSERT INTO user (username, password, permission) VALUES ('admin', ?, '*')", (hashed,))
+db.execute("CREATE TABLE IF NOT EXISTS cache (context string PRIMARY KEY NOT NULL, content string, expire UNSIGNED BIGINT)")
 
 db.commit()
 db.close()

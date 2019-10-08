@@ -2,7 +2,7 @@ import requests
 import json
 import os
 import sqlite3
-from datetime import datetime, timedelta
+import time
 
 
 class CommitConnection:
@@ -23,7 +23,6 @@ class CommitConnection:
         for year in jsonResponse["years"]:
             count = count + year['total']
         return count
-
 
 
 class DatabaseController:
@@ -125,5 +124,30 @@ class DatabaseController:
     def delete_user(self, username):
         database = sqlite3.connect(self.database)
         database.execute("DELETE FROM user WHERE username=?", (username,))
+        database.commit()
+        database.close()
+
+    def set_cache(self, context, content, tte):
+        database = sqlite3.connect(self.database)
+        database.execute("DELETE FROM cache WHERE context=?", (context,))
+        database.execute("INSERT INTO cache (context, content, expire) VALUES (?, ?, ?)", (context, content, int(time.time() + tte)))
+        database.commit()
+        database.close()
+
+    def get_cache(self, context):
+        database = sqlite3.connect(self.database)
+        result = database.execute("SELECT content, expire FROM cache WHERE context=?", (context,))
+        result = result.fetchall()
+        database.close()
+        if len(result) > 0:
+            if result[0][1] < time.time():
+                return False
+            return result[0][0]
+        else:
+            return False
+
+    def delete_cache(self, context):
+        database = sqlite3.connect(self.database)
+        database.execute("DELETE FROM cache WHERE context=?", (context,))
         database.commit()
         database.close()

@@ -49,6 +49,7 @@ if version < 1.1:
     db.execute("INSERT INTO user (username, password, permission) VALUES ('admin', ?, '*')", (str(pw),))
     db.execute("DELETE FROM settings WHERE setting='password'")
     db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("jwtToken", input("Please enter some LONG random input. Its important. If it is too short your login will not be secure")))
+    db.execute("CREATE TABLE IF NOT EXISTS cache (context string PRIMARY KEY NOT NULL, content string, expire UNSIGNED BIGINT)")
     print("Your new login username is admin. Passwort stays the same")
     print("Updated to 1.1: Enjoy new (really big) changes!")
 

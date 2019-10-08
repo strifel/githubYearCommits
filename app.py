@@ -1,5 +1,5 @@
 from sqlite3 import IntegrityError
-from src.Helper import returnError, returnJSON, returnMessage
+from src.Helper import returnError, returnJSON, returnMessage, returnJSONText
 from flask import render_template, make_response, send_from_directory, send_file, request, Flask, g
 from src.Settings import validSettings as validSettingValues
 import re
@@ -44,6 +44,9 @@ def main_page():
 
 @app.route('/api/contributions', methods=['GET'])
 def contributions():
+    cache = database.get_cache("contributions")
+    if not (not cache):
+        return returnJSONText(cache)
     duration = database.get_setting("duration")
     pcontributions = {}
     attribute = ""
@@ -57,7 +60,9 @@ def contributions():
         else:
             pcontributions.update({participant[0]: {"username": participant[0], "count": 0}})
     pcontributions = sortWithCount(pcontributions)
-    return returnJSON({"participants": pcontributions, "information": {"duration": duration, "attribute": attribute}})
+    response = json.dumps({"participants": pcontributions, "information": {"duration": duration, "attribute": attribute}})
+    database.set_cache("contributions", response, int(database.get_setting("cache")))
+    return returnJSONText(response)
 
 
 @app.route('/participant/<string:participant>', methods=['GET'])
@@ -85,6 +90,10 @@ def participant_api(username):
                 found = True
         if not found:
             return returnError(404, "User not found")
+    # Checking for cache
+    cache = database.get_cache("participant:" + username)
+    if not (not cache):
+        return returnJSONText(cache)
     # Finding year in query string
     if "contributions_year" in request.args:
         year = int(request.args['contributions_year'])
@@ -92,8 +101,7 @@ def participant_api(username):
         year = int(datetime.now().strftime("%Y"))
     # Create Participant Object and response
     participant = Participant(username)
-    resp = make_response(
-        json.dumps(
+    resp = json.dumps(
             {
                 "general": {
                     "username": participant.username,
@@ -109,13 +117,9 @@ def participant_api(username):
                     "contribution_streak": participant.get_commit_streak()
                 }
             }
-        ),
-        {"Content-Type": "application/json"}
-    )
-    resp.headers['Cache-Control'] = "no-cache, no-store, must-revalidate"
-    resp.headers['Pragma'] = "no-cache"
-    resp.headers['Expires'] = "0"
-    return resp
+        )
+    database.set_cache("participant:" + username, resp, database.get_setting("cache"))
+    return returnJSONText(resp)
 
 
 @app.route('/api/participants/<string:username>', methods=['POST', 'DELETE'])
