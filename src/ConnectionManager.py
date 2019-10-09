@@ -35,66 +35,38 @@ class DatabaseController:
             self.database = "database"
 
     def getPassword(self):
-        database = sqlite3.connect(self.database)
-        result = database.execute("SELECT value FROM settings WHERE setting='password'")
-        result_fetched = result.fetchall()
+        result_fetched = self.execute_sql("SELECT value FROM settings WHERE setting='password'", [], False)
         if len(result_fetched) == 1:
-            database.close()
             return result_fetched[0][0]
-        database.close()
 
     def get_setting(self, setting):
-        database = sqlite3.connect(self.database)
-        result = database.execute("SELECT value FROM settings WHERE setting=?", (setting,))
-        result_fetched = result.fetchall()
+        result_fetched = self.execute_sql("SELECT value FROM settings WHERE setting=?", (setting,), False)
         if len(result_fetched) == 1:
-            database.close()
             return result_fetched[0][0]
-        database.close()
 
     def set_setting(self, setting, value):
-        database = sqlite3.connect(self.database)
-        database.execute("UPDATE settings SET value=? WHERE setting=?", (value, setting))
-        database.commit()
-        database.close()
+        self.execute_sql("UPDATE settings SET value=? WHERE setting=?", (value, setting), True)
 
     def get_participants(self):
-        database = sqlite3.connect(self.database)
-        result = database.execute("SELECT username FROM participant")
-        result_fetched = result.fetchall()
-        database.close()
-        return result_fetched
+        return self.execute_sql("SELECT username FROM participant", [], False)
 
     def add_participants(self, user):
-        database = sqlite3.connect(self.database)
-        database.execute("INSERT INTO participant (username) VALUES (?)", (user,))
-        database.commit()
-        database.close()
+        self.execute_sql("INSERT INTO participant (username) VALUES (?)", (user,), True)
 
     def remove_participants(self, user):
-        database = sqlite3.connect(self.database)
-        database.execute("DELETE FROM participant WHERE username=?", (user,))
-        database.commit()
-        database.close()
+        self.execute_sql("DELETE FROM participant WHERE username=?", (user,), True)
 
     def set_user_attribute(self, username, attribute, value):
-        database = sqlite3.connect(self.database)
-        database.execute("UPDATE user SET " + attribute + "=? WHERE username=?", (value, username))
-        database.commit()
-        database.close()
+        self.execute_sql("UPDATE user SET " + attribute + "=? WHERE username=?", (value, username), True)
 
     def get_users_names(self):
-        database = sqlite3.connect(self.database)
-        users = database.execute("SELECT username FROM user")
-        users = users.fetchall()
+        users = self.execute_sql("SELECT username FROM user", [], False)
         if len(users) > 0:
             userList = []
             for user in users:
                 userList.append(user[0])
-            database.close()
             return userList
         else:
-            database.close()
             return []
 
     def get_user_by_name(self, username):
@@ -104,9 +76,7 @@ class DatabaseController:
         return user
 
     def return_user_with_name_and_password(self, user, passwordHash):
-        database = sqlite3.connect(self.database)
-        users = database.execute("SELECT * FROM user WHERE username=?", (user,))
-        users = users.fetchall()
+        users = self.execute_sql("SELECT * FROM user WHERE username=?", (user,), False)
         if len(users) > 0:
             if users[0][1] == passwordHash:
                 return users[0]
@@ -116,16 +86,10 @@ class DatabaseController:
             return False
 
     def create_user(self, username, passwordHash, permissions):
-        database = sqlite3.connect(self.database)
-        database.execute("INSERT INTO user (username, password, permission) VALUES (?, ?, ?)", (username, passwordHash, permissions))
-        database.commit()
-        database.close()
+        self.execute_sql("INSERT INTO user (username, password, permission) VALUES (?, ?, ?)", (username, passwordHash, permissions), True)
 
     def delete_user(self, username):
-        database = sqlite3.connect(self.database)
-        database.execute("DELETE FROM user WHERE username=?", (username,))
-        database.commit()
-        database.close()
+        self.execute_sql("DELETE FROM user WHERE username=?", (username,), True)
 
     def set_cache(self, context, content, tte):
         database = sqlite3.connect(self.database)
@@ -135,10 +99,7 @@ class DatabaseController:
         database.close()
 
     def get_cache(self, context):
-        database = sqlite3.connect(self.database)
-        result = database.execute("SELECT content, expire FROM cache WHERE context=?", (context,))
-        result = result.fetchall()
-        database.close()
+        result = self.execute_sql("SELECT content, expire FROM cache WHERE context=?", (context,), False)
         if len(result) > 0:
             if result[0][1] < time.time():
                 return False
@@ -147,7 +108,15 @@ class DatabaseController:
             return False
 
     def delete_cache(self, context):
+        self.execute_sql("DELETE FROM cache WHERE context=?", (context,), True)
+
+    def execute_sql(self, sql, params, commit):
         database = sqlite3.connect(self.database)
-        database.execute("DELETE FROM cache WHERE context=?", (context,))
-        database.commit()
-        database.close()
+        result = database.execute(sql, params)
+        if commit:
+            database.commit()
+            database.close()
+        else:
+            result = result.fetchall()
+            database.close()
+            return result
