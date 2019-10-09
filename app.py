@@ -137,11 +137,13 @@ def participants(username):
             except IntegrityError:
                 return returnError(409, "Participant already exists")
             else:
+                database.execute_sql("DELETE FROM cache WHERE context=?", ("contributions",), True)
                 resp = make_response(json.dumps({"message": "Added participant!"}), 201)
                 resp.headers['Content-Type'] = 'application/json'
                 return resp
         elif request.method == 'DELETE':
             database.remove_participants(username)
+            database.execute_sql("DELETE FROM cache WHERE context=?", ("contributions",), True)
             return returnMessage("Removed participant!")
     else:
         return returnError(403, "You are not authorized!")
