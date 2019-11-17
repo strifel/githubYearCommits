@@ -31,6 +31,7 @@ function reloadContributions() {
             replacePercentageHandler();
             // Hide spinner
             document.getElementById('spinner').hidden = true;
+            document.getElementById('loadingText').hidden = true;
         }
     };
     request.open("GET", "/api/contributions");

@@ -53,6 +53,7 @@ function loadParticipant(username, query) {
                 changeDarkMode(false);
                 // Hide the spinner
                 document.getElementById('spinner').hidden = true;
+                document.getElementById('loadingText').hidden = true;
             } else {
                 if (participantRequest.responseText.startsWith("{")) {
                     // Should be json...
