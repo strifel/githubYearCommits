@@ -15,9 +15,10 @@
     <div class="bounce2" data-affect-dark-mode="background-color"></div>
     <div class="bounce3" data-affect-dark-mode="background-color"></div>
 </div>
-<h3 data-affect-dark-mode="color" id="loadingText" style="text-align: center"><br>Please wait while the data is getting loaded!</h3>
+<h3 data-affect-dark-mode="color" id="loadingText" style="text-align: center"><br>Please wait while the data is getting
+    loaded!</h3>
 <h1 data-affect-dark-mode="color" id="title"></h1>
-<table id="contributionsTable">
+<table id="contributionsTable" class="noSelected">
 </table>
 
 <button onclick="changeDarkMode(true)" id="darkModeButton">Dark Mode</button>
@@ -80,6 +81,15 @@
 
         right: 1%;
         bottom: 1%;
-        position:absolute;
+        position: absolute;
+    }
+
+    .noSelected {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 </style>
