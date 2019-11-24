@@ -9,13 +9,17 @@
 </head>
 <body data-affect-dark-mode="!background-color">
 <div class="login">
-    <h1 id="1" data-affect-dark-mode="color">Configuration</h1>
-
-    <h3 data-affect-dark-mode="color">Please login!</h3>
-
-    <input id="username" placeholder="Username" type="text" class="inputCredentials" data-affect-dark-mode="border-color&color"><br><br>
-    <input id="password" placeholder="Password" type="password" class="inputCredentials" data-affect-dark-mode="border-color&color"><br><br>
-    <button class="btn btn-primary" onclick="login()">Login</button>
+    <h1 id="1" data-affect-dark-mode="color">Log In</h1>
+    <br>
+    <div class="row" style="margin: auto; max-width: 200px">
+        <div id="col-lg-5">
+            <input id="username" placeholder="Username" type="text" class="inputCredentials form-control input-sm"
+                   data-affect-dark-mode="border-color&color&!background-color"><br>
+            <input id="password" placeholder="Password" type="password" class="inputCredentials form-control input-sm"
+                   data-affect-dark-mode="border-color&color&!background-color"><br>
+            <button class="btn btn-primary form-control input-sm" onclick="login()">Login</button>
+        </div>
+    </div>
     <p id="error" style="color: red;"></p>
 </div>
 <script src="static/login.js"></script>
@@ -23,17 +27,16 @@
 </body>
 </html>
 <style>
-
     .login {
         text-align: center;
         margin: auto;
     }
 
     .inputCredentials {
-        border: 0;
         outline: 0;
         background: transparent;
-        border-bottom: 1px solid black;
+        border: 1px solid black;
+        border-radius: 120px;
         text-align: center;
         margin: auto;
     }
