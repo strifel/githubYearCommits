@@ -13,6 +13,8 @@ class Participant:
         self.repos = json.loads(response.text)
         response = http.get("https://github-contributions-api.now.sh/v1/" + username)
         self.contributions = json.loads(response.text)
+        response = http.get("https://api.github.com/users/" + username)
+        self.user = json.loads(response.text)
 
     def get_languages(self):
         languages = {}
@@ -55,3 +57,8 @@ class Participant:
             if cYear['year'] == str(year):
                 return cYear['total']
         return 0
+
+    def get_description(self):
+        # Check with database
+        return self.user['bio']
+

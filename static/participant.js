@@ -48,6 +48,9 @@ function loadParticipant(username, query) {
                     }
                 });
                 document.getElementById('languageText').hidden = false;
+                // Description
+                document.getElementById('description').innerText = participant['general']['description'];
+                document.getElementById('descriptionText').hidden = false;
                 // Reload darkmode (Yeah bad implementation. But who cares? The whole project is coded like this!)
                 changeDarkMode(false);
                 changeDarkMode(false);

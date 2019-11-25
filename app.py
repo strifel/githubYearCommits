@@ -107,6 +107,7 @@ def participant_api(username):
                     "username": participant.username,
                     "commit_mail": None if database.get_setting(
                         "show-commit-mail") == "false" else participant.get_commit_mail(),
+                    "description": participant.get_description()
                 },
                 "languages": participant.get_languages(),
                 "stats": {
