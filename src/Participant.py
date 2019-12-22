@@ -58,6 +58,15 @@ class Participant:
                 return cYear['total']
         return 0
 
+    def get_max_contributions(self):
+        max = 0
+        date = ""
+        for contrib in self.contributions['contributions']:
+            if contrib['count'] > max:
+                max = contrib['count']
+                date = contrib['date']
+        return str(max) + " (" + date + ")"
+
     def get_description(self):
         # Check with database
         return self.user['bio']

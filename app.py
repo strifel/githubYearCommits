@@ -115,7 +115,8 @@ def participant_api(username):
                         "year": year,
                         "contributions": participant.get_commits_in_year(year)
                     },
-                    "contribution_streak": participant.get_commit_streak()
+                    "contribution_streak": participant.get_commit_streak(),
+                    "max": participant.get_max_contributions()
                 }
             }
         )
