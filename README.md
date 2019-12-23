@@ -12,6 +12,9 @@ This project is still being worked on:
 - More types of challenges (not only year/eternity). Enter a specific start/end date.
 - Make everything more beautiful (Please help! :))
 ## Installation
+### Docker way:
+`docker run --name gyc -p 8000:80 -d strifel:githubyearcommits`
+### Manual way: 
 1. clone the repo
 2. run `python3 install.py` and enter a (new) password when prompted. (WARING: Do not use any standard password.)
 3. Configure your web server (e.g. Apache WGSI, gunicorn) to use `app.py` (Or run `app.py` (not recommended)). ([ApacheWGSI Config](https://github.com/strifel/githubYearCommits/wiki/Apache-WGSI-Configuration))
