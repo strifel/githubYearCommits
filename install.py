@@ -1,6 +1,7 @@
 import hashlib
 import sqlite3
 import os
+from base64 import b64encode
 import sys
 from version import VERSION, DEV_STABLE, DEV
 if DEV and "--continue-dev" not in sys.argv:
@@ -25,7 +26,7 @@ db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("duration", "
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("dark-mode-default", "false"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("show-commit-mail", "false"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)",
-           ("jwtToken", input("Please enter some LONG random input. Its important. If it is too short your login will not be secure")))
+           ("jwtToken", b64encode(os.urandom(128)).decode('utf-8')))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("version", str(VERSION)))
 db.execute("CREATE TABLE IF NOT EXISTS participant (username string PRIMARY KEY NOT NULL)")
 db.execute("INSERT INTO participant (username) VALUES ('strifel')")
