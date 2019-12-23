@@ -13,7 +13,8 @@ This project is still being worked on:
 - Make everything more beautiful (Please help! :))
 ## Installation
 ### Docker way:
-`docker run --name gyc -p 8000:80 -d strifel/githubyearcommits`
+`docker run --name gyc -p 8000:80 -d strifel/githubyearcommits`<br>
+Please change the admin password afterwards. Standard Password is `admin`
 ### Manual way: 
 1. clone the repo
 2. run `python3 install.py` and enter a (new) password when prompted. (WARING: Do not use any standard password.)
