@@ -4,6 +4,14 @@ import os
 from base64 import b64encode
 import sys
 from version import VERSION, DEV_STABLE, DEV
+if "GYC_DATABASE" in os.environ:
+    dbpath = os.environ['GYC_DATABASE']
+else:
+    dbpath = "database"
+if os.path.isfile(dbpath):
+    print("Already installed!")
+    exit(0)
+
 if DEV and "--continue-dev" not in sys.argv:
     continueInput = input("You are using a Dev version. This is not recommended. It is recommend to rollback to the "
                           "last stable commit with 'git checkout " + DEV_STABLE + "'. To continue type 'continue'")
@@ -14,10 +22,8 @@ if len(sys.argv) > 1 and not sys.argv[1][0] == "-":
 else:
     pw = input("Your Admin password: ")
 hashed = hashlib.sha256(pw.encode()).hexdigest() + ""
-if "GYC_DATABASE" in os.environ:
-    db = sqlite3.connect(os.environ['GYC_DATABASE'])
-else:
-    db = sqlite3.connect("database")
+
+db = sqlite3.connect(dbpath)
 db.execute("CREATE TABLE IF NOT EXISTS settings (setting string PRIMARY KEY, value string)")
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("cache", "1220"))
 db.execute("INSERT INTO settings (setting, value) VALUES (?, ?)", ("allow-force", "true"))
