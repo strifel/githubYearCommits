@@ -26,7 +26,7 @@ class Participant:
                 languages[language]["count"] += 1
             else:
                 languages.update({language: {"language": language, "count": 1}})
-        return sortWithCount(languages)
+        return sortWithCount(languages)[-5:]
 
     def get_commit_mail(self):
         if len(self.repos) > 0:
