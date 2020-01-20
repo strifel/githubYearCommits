@@ -35,8 +35,6 @@ Please change the admin password afterwards. Standard Password is `admin`
 - Admin can force reload even if disabled
 - You can click on count and hover over another to see percentage.
 - You can change path to sqlite database by changing `GYC_DATABASE` environmental variable 
-## Known issues
-- Apache WGSI normally starts everytime a new instance. This will disable caching completely. (Disable that feature of WGSI to use caching)([See Apache WGSI Configuration](https://github.com/strifel/githubYearCommits/wiki/Apache-WGSI-Configuration))
 ## License
 On 26th Juli 2018 this is on MIT License.
 ## Special Thanks go out to
