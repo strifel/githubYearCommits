@@ -22,41 +22,53 @@
 <h3 data-affect-dark-mode="color" id="loadingText" style="text-align: center"><br>Please wait while the data is getting loaded!</h3>
 <div class="container">
     <div class="row">
-        <div id="user" class="col-xs-12 col-sm-8 col-md-6 offset-sm-2 offset-md-3 col-lg-4 offset-lg-4 col-xl-4 offset-xl-4">
-            <table class="participant">
-                <tr>
-                    <td><img id="profile_picture" hidden alt="Profile picture"></td>
-                </tr>
-                <tr>
-                    <td>
+        <div id="user" class="d-flex p-3 flex-column">
+                <div class="d-flex p-2 bd-highlight">
+                    <div><img id="profile_picture" hidden alt="Profile picture"></div>
+                </div>
+                <div class="d-flex p-2 bd-highlight">
+                    <div>
                         <a id="profile_link"></a>
-                        <h4 id="contributions_in_year" data-affect-dark-mode="color"></h4>
-                        <h4 hidden data-affect-dark-mode="color" id="commit_email_header">Email:
+                        <h5 id="contributions_in_year" data-affect-dark-mode="color"></h5>
+                        <h5 hidden data-affect-dark-mode="color" id="commit_email_header">Email:
                             <a id="commit_email"></a>
-                        </h4>
-                        <h4 id="contribution_streak" data-affect-dark-mode="color"></h4>
-                        <h4 id="max_contrib" data-affect-dark-mode="color"></h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                        </h5>
+                        <h5 id="contribution_streak" data-affect-dark-mode="color"></h5>
+                        <h5 id="max_contrib" data-affect-dark-mode="color"></h5>
+                    </div>
+                </div>
+                <div class="d-flex p-2 bd-highlight">
+                    <div>
                         <h3 id="descriptionText" data-affect-dark-mode="color" hidden>Description:</h3><br>
                         <p data-affect-dark-mode="color" style="line-height: normal" id="description"></p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
+                    </div>
+                </div>
+                <div class="d-flex p-2 bd-highlight">
+                    <div>
                         <h3 id="languageText" data-affect-dark-mode="color" hidden>Top 5 Languages:</h3><br>
                         <ol id="languages"></ol>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
         </div>
     </div>
 </div>
 
 <script src="/static/participant.js"></script>
 <script src="/static/darkmode.js"></script>
+<script>
+    console.lo
+    window.onresize = () => {
+        setResize();
+    };
+    function setResize() {
+        if (window.innerWidth > 800) {
+            document.getElementById('user').classList.remove("flex-column");
+        } else {
+            document.getElementById('user').classList.add("flex-column");
+        }
+    }
+    setResize();
+</script>
 </body>
 </html>
 <style>
