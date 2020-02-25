@@ -12,6 +12,8 @@ This project is still being worked on:
 - More types of challenges (not only year/eternity). Enter a specific start/end date.
 - Make everything more beautiful (Please help! :))
 ## Installation
+### Heroku Way:
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 ### Docker way:
 `docker run --name gyc -p 8000:80 -d strifel/githubyearcommits`<br>
 Please change the admin password afterwards. Standard Password is `admin`
